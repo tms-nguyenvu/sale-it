@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="light">
   <head>
     <title><%= content_for(:title) || "Sale Ai V1" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -35,6 +35,24 @@
   </head>
 
   <body>
+    <%# Toast %>
+    <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2">
+      <% flash.each do |type, message| %>
+        <% toast_class = case type.to_sym
+          when :notice then "alert-info"
+          when :success then "alert-success"
+          when :error then "alert-error"
+          when :alert then "alert-warning"
+          else "alert-info"
+        end %>
+      <div data-controller="flash" class="alert <%= toast_class %> shadow-lg animate-fade-in transition-opacity
+      duration-500 ease-out">
+        <span class="text-white"><%= message %></span>
+      </div>
+
+      <% end %>
+    </div>
+
     <%= yield %>
   </body>
 </html>
