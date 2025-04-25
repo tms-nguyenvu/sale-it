@@ -116,6 +116,12 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    faraday (2.13.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -160,6 +166,8 @@ GEM
     minitest (5.25.5)
     msgpack (1.8.0)
     mutex_m (0.3.0)
+    net-http (0.6.0)
+      uri
     net-imap (0.5.6)
       date
       net-protocol
@@ -382,8 +390,11 @@ DEPENDENCIES
   capybara
   debug
   devise (~> 4.9.4)
+  dotenv
+  faraday
   jbuilder
   kamal
+  nokogiri
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
