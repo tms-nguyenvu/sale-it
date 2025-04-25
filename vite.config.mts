@@ -1,8 +1,15 @@
 import { defineConfig } from 'vite'
-import RubyPlugin from 'vite-plugin-ruby'
+import ViteRails from "vite-plugin-rails";
 
 export default defineConfig({
   plugins: [
-    RubyPlugin(),
+    ViteRails({
+      envVars: { RAILS_ENV: "development" },
+      envOptions: { defineOn: "import.meta.env" },
+      fullReload: {
+        additionalPaths: ["config/routes.rb", "app/views/**/*"],
+        delay: 300,
+      },
+    }),
   ],
 })

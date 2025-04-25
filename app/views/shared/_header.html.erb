@@ -1,0 +1,65 @@
+<header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+  <div class="flex items-center">
+    <button
+      data-action="click->sidebar#toggle"
+      class="btn p-2 rounded-lg text-gray-600 hover:text-primary hover:bg-gray-100 focus:outline-none
+      focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+      aria-label="Menu"
+    >
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+    <div class="w-full flex-1 ml-4 hidden md:block">
+      <label class="input">
+        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+        <input type="search" required placeholder="Tìm kiếm..." />
+      </label>
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-4">
+    <div class="relative">
+      <button class="p-2 rounded-full text-gray-600 hover:text-primary hover:bg-gray-100 focus:outline-none
+      focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200">
+        <i data-lucide="bell" class="size-6"></i>
+        <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+      </button>
+    </div>
+
+    <div class="flex items-center border-l pl-4 border-gray-200">
+      <div class="dropdown dropdown-end">
+      <div>
+          <div class="avatar avatar-online avatar-placeholder" tabindex="0" role="button">
+          <div class="bg-neutral text-neutral-content h-8 w-8  rounded-full">
+            <%= current_user&.email&.first&.upcase || "U" %>
+          </div>
+      </div>
+      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box max-w-52 py-2 shadow-lg mt-2 space-y-2">
+        <p class="text-sm font-bold p-2 truncate w-full"><%= current_user&.email %></p>
+        <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-gray-200"></div>
+        <li class="hover:bg-primary/10 rounded-md">
+          <a class="flex items-center gap-2 p-2 text-sm text-gray-600 transition-colors 
+          hover:bg-primary/10 hover:text-primary">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            Profile
+          </a>
+        </li>
+        <li class="hover:bg-primary/10 rounded-md">
+          <a class="flex items-center gap-2 p-2 text-sm text-gray-600 transition-colors 
+          hover:bg-primary/10 hover:text-primary">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+            Settings
+          </a>
+        </li>
+        <div role="separator" aria-orientation="horizontal" class="-mx-1 my-1 h-px bg-gray-200"></div>
+        <li class="hover:bg-primary/10 hover:text-primary transition-colors rounded-md">
+          <%= button_to destroy_user_session_path, method: :delete,
+          class: "flex items-center gap-2 text-sm text-gray-600 w-full" do %>
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            Logout
+          <% end %>
+        </li>
+      </ul>
+    </div>
+    </div>
+  </div>
+</header>
