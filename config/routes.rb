@@ -1,4 +1,4 @@
-# config/routes.rb
+require "sidekiq/web"
 Rails.application.routes.draw do
   devise_for :users, skip: [ :registrations ]
 
@@ -26,4 +26,6 @@ Rails.application.routes.draw do
   end
 
   root "admin/dashboard#index"
+
+  mount Sidekiq::Web => "/sidekiq"
 end
