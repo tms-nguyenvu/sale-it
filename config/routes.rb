@@ -17,10 +17,14 @@ Rails.application.routes.draw do
     end
 
     resources :crawl_sources do
-      post :approve, on: :member
-      post :reject, on: :member
-      get :pending, on: :collection
-      get :history, on: :collection
+      member do
+        patch :approve
+        patch :reject
+      end
+      collection do
+        get :history
+        get :pending
+      end
     end
     get "dashboard", to: "dashboard#index"
   end

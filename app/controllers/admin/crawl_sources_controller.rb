@@ -2,44 +2,64 @@ module Admin
   class CrawlSourcesController < ApplicationController
     layout "admin"
     before_action :authenticate_user!
+    before_action :set_crawl_source, only: [ :show, :edit, :update, :destroy, :approve, :reject ]
+
+    INTERVAL_HOURS = 2.hour
 
     def index
       @crawl_sources = CrawlSource.all
+      @active_sources = CrawlSource.active_sources
+      @paused_sources = CrawlSource.paused_sources
+      @pending_approval = CrawlSource.pending_approval
+      @approved_sources = CrawlSource.approved_sources
+      @rejected_sources = CrawlSource.rejected_sources
+      @data_temporaries_approved = CrawlDataTemporary.approved_data
+      @data_temporaries_pending = CrawlDataTemporary.pending_data
+    end
+
+    def show
+    end
+
+    def new
+    end
+
+    def edit
+    end
+
+    def update
+      if @crawl_source.update(crawl_source_params)
+        flash[:notice] = "Source updated successfully"
+        redirect_to admin_crawl_sources_path
+      else
+        flash[:alert] = "Error updating source"
+        render :edit
+      end
     end
 
     def create
-      source_url = params[:source_url]
-      # Crawl all links from the source page
-      all_links = Crawler::SourceCrawler.crawl_links(url: source_url)
+      begin
+        scheduled = params[:scheduled] == "1" ? true : false
+        Crawler::CrawlSourceService.new(params[:source_url], params[:source_type], scheduled).process
+        flash[:notice] = "Crawl completed successfully"
+        redirect_to pending_admin_crawl_sources_path
+      rescue StandardError => e
+        flash[:alert] = "Error: #{e.message}"
+        redirect_to pending_admin_crawl_sources_path
+      end
+    end
 
-      # Generate prompt to extract only relevant detail links
-      link_extraction_prompt = I18n.t(
-        "ai.gemini_service.link_extraction_prompt",
-        source_url: source_url,
-        links: all_links.join(", ")
-      )
+    def approve
+      update_approval_status(:approved)
+    end
 
-      # Use Gemini AI to pick out detail links
-      filtered_paths = Gemini::GenerateContent.call(prompt: link_extraction_prompt)
-      detail_paths = JSON.parse(filtered_paths)
+    def reject
+      update_approval_status(:rejected)
+    end
 
-      # Crawl main content from those detail pages
-      detail_contents = Crawler::SourceCrawler.crawl_details(
-        detail_paths: detail_paths,
-        base_url: source_url
-      )
-
-      # Generate prompt to extract company details
-      company_extraction_prompt = I18n.t(
-        "ai.gemini_service.company_extraction_prompt",
-        source_type: params[:source_type],
-        details: detail_contents
-      )
-
-      # Use Gemini AI to extract company details
-      companies = Gemini::GenerateContent.call(prompt: company_extraction_prompt)
-
-      puts companies
+    def destroy
+      @crawl_source.destroy
+      flash[:notice] = "Source deleted successfully"
+      redirect_to admin_crawl_sources_path
     end
 
     def pending
@@ -47,9 +67,27 @@ module Admin
       render :index
     end
 
+    def history
+      @crawl_sources = CrawlSource.all
+      render :index
+    end
+
     private
-      def crawl_source_params
-        params.require(:crawl_source).permit(:source_url, :source_type, :status, :approval_status)
-      end
+
+    def set_crawl_source
+      @crawl_source = CrawlSource.find(params[:id])
+    end
+
+    def crawl_source_params
+      params.require(:crawl_source).permit(:source_url, :source_type)
+    end
+
+    def update_approval_status(status)
+      @crawl_source.update(approval_status: status)
+      @crawl_source.crawl_data_temporaries.update_all(data_status: status)
+
+      flash[:notice] = "Source and related data #{status} successfully"
+      redirect_to pending_admin_crawl_sources_path
+    end
   end
 end
