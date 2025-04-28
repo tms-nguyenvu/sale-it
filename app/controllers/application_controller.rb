@@ -19,14 +19,14 @@ class ApplicationController < ActionController::Base
     Sentry.capture_exception(e) if Rails.env.production?
 
     respond_to do |format|
-      format.html { render file: Rails.root.join('public', '500.html'), status: 500, layout: false }
+      format.html { render file: Rails.root.join("public", "500.html"), status: 500, layout: false }
       format.json { render json: { error: "Internal Server Error" }, status: 500 }
     end
   end
 
   def handle_not_found(e)
     respond_to do |format|
-      format.html { render file: Rails.root.join('public', '404.html'), status: :not_found, layout: false }
+      format.html { render file: Rails.root.join("public", "404.html"), status: :not_found, layout: false }
       format.json { render json: { error: "Resource not found" }, status: :not_found }
     end
   end
