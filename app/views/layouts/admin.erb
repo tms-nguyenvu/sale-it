@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
     <title><%= content_for(:title) || "Sale Ai V1" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,9 +34,28 @@
 
   </head>
 
-  <body>
+  <body class="min-h-screen bg-gray-50 antialiased text-gray-800">
     <%= render 'shared/flash_message' %>
+    <div data-controller="sidebar" class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+    <%= render "shared/sidebar" %>
 
-    <%= yield %>
-  </body>
+    <!-- Main content -->
+      <div data-sidebar-target="content" class="flex-1 flex flex-col overflow-hidden transition-all duration-300">
+      <%= render "shared/header" %>
+
+        <main class="flex-1 overflow-y-auto p-6 bg-gray-50">
+          <div class="container mx-auto"
+            <%= yield %>
+          </div>
+      </main>
+
+        <footer class="bg-white border-t border-gray-200 py-4 px-6">
+          <div class="text-center text-xs text-gray-500">
+            &copy; <%= Date.current.year %> Sale-It Admin Dashboard. All rights reserved.
+          </div>
+        </footer>
+    </div>
+  </div>
+</body>
 </html>
