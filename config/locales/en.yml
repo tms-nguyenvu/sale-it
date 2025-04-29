@@ -28,4 +28,44 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  ai:
+    gemini_service:
+      link_extraction_prompt: |
+        Task: Extract links leading to company detail pages from a list of available links.
+
+        Information:
+        - Source website: %{source_url}
+        - Current links: %{links}
+
+        Requirements:
+        - Analyze the provided links and extract all valid links leading to company detail pages.
+        - Only return links with valid formats (e.g., starting with "http", "https", or "/").
+        - Ensure the returned links are complete and valid.
+
+        Result:
+        - Return a list of complete links to company detail pages.
+        - Return in proper JSON format, DO NOT add ```json or any characters outside the JSON array
+
+        Note: If no valid links are found, return an empty list.
+
+      company_extraction_prompt: |
+        Task: Analyze HTML from %{source_type} website and extract information about companies.
+
+        Information to extract for each company:
+        1. name: Full company name
+        2. industry: Main business industry of the company
+        3. website: Official URL of the company (if available)
+
+        If any information is not found, set the value to null.
+
+        HTML to analyze:
+        %{details}
+
+        Return in proper JSON format, DO NOT add ```json or any characters outside the JSON array:
+        [
+          {
+            "name": "company name",
+            "industry": "industry",
+            "website": "website url"
+          }
+        ]
