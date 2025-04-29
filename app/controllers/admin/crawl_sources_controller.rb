@@ -38,6 +38,9 @@ module Admin
 
     def create
       begin
+        if @crawl_sources.find_by(source_url: params[:source_url])
+          raise "Source URL already exists"
+        end
         scheduled = params[:scheduled] == "1" ? true : false
         Crawler::CrawlSourceService.new(params[:source_url], params[:source_type], scheduled).process
         flash[:notice] = "Crawl completed successfully"
@@ -47,10 +50,47 @@ module Admin
         redirect_to pending_admin_crawl_sources_path
       end
     end
-
     def approve
-      update_approval_status(:approved)
+      ActiveRecord::Base.transaction do
+        @crawl_source.update!(approval_status: :approved)
+
+        existing_company_names = Company.pluck(:name).map { |name| normalize_company_name(name) }.to_set
+
+        @crawl_source.crawl_data_temporaries.find_each do |temporary_data|
+          data = temporary_data.data || {}
+          name = data["name"].to_s.strip
+          website = data["website"]
+          industry = data["industry"]
+
+          next if name.blank?
+
+          normalized_input_name = normalize_company_name(name)
+
+          next if existing_company_names.include?(normalized_input_name)
+
+          begin
+            Company.create!(
+              name: name,
+              industry: industry,
+              website: website,
+              crawl_source_id: @crawl_source.id
+            )
+            existing_company_names.add(normalized_input_name)
+          rescue ActiveRecord::RecordInvalid => e
+            logger.warn "Skipped company #{name}: #{e.message}"
+          end
+        end
+
+        @crawl_source.crawl_data_temporaries.update_all(data_status: :approved)
+      end
+
+      flash[:notice] = "Source and related data approved successfully"
+      redirect_to pending_admin_crawl_sources_path
+    rescue StandardError => e
+      flash[:alert] = "Error approving source: #{e.message}"
+      redirect_to pending_admin_crawl_sources_path
     end
+
 
     def reject
       update_approval_status(:rejected)
@@ -88,6 +128,13 @@ module Admin
 
       flash[:notice] = "Source and related data #{status} successfully"
       redirect_to pending_admin_crawl_sources_path
+    end
+
+    def normalize_company_name(name)
+      name.to_s.downcase
+        .gsub(/[^a-z0-9]/, "")
+        .squeeze(" ")
+        .strip
     end
   end
 end

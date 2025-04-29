@@ -4,11 +4,17 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  namespace :admin, path: "" do
+  namespace :admin, path: "/" do
     resources :companies do
       resources :contacts, shallow: true
       resource :score_lead, only: [ :show, :edit, :update ], shallow: true
+      collection do
+        get :potential
+        get :decision_maker
+        get :predict_ability
+      end
     end
+
 
     resources :leads do
       resources :emails, shallow: true
@@ -21,10 +27,8 @@ Rails.application.routes.draw do
         patch :approve
         patch :reject
       end
-      collection do
-        get :history
-        get :pending
-      end
+      get :pending, on: :collection
+      get :history, on: :collection
     end
     get "dashboard", to: "dashboard#index"
   end

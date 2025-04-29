@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_014408) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_28_084205) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "companies", force: :cascade do |t|
+    t.string "name"
+    t.string "industry"
+    t.string "website"
+    t.bigint "crawl_source_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crawl_source_id"], name: "index_companies_on_crawl_source_id"
+  end
 
   create_table "crawl_data_temporaries", force: :cascade do |t|
     t.jsonb "data"
@@ -64,5 +74,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_014408) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "companies", "crawl_sources"
   add_foreign_key "crawl_data_temporaries", "crawl_sources", on_delete: :cascade
 end
