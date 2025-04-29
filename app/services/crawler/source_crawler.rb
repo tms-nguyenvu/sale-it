@@ -12,12 +12,14 @@ module Crawler
         a
       ].freeze
 
+      INVALID_HREF_PREFIXES = [ "#", "javascript" ].freeze
+
       def crawl_links(url:)
         html = Crawler::HtmlFetcher.fetch(url: url, headless: false)
         doc = Crawler::HtmlParser.extract_info(html)
         doc.css("a").map { |a| a["href"] }
           .compact
-          .reject { |href| href.strip.empty? || href.start_with?("#", "javascript") }
+          .reject { |href| href.strip.empty? || INVALID_HREF_PREFIXES.any? { |prefix| href.start_with?(prefix) } }
           .uniq
       rescue StandardError => e
         Rails.logger.error("Failed to fetch links from #{url}: #{e.message}")

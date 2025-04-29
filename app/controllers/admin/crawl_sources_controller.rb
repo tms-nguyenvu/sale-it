@@ -1,5 +1,4 @@
-module Admin
-  class CrawlSourcesController < ApplicationController
+class Admin::CrawlSourcesController < ApplicationController
     layout "admin"
     before_action :authenticate_user!
     before_action :set_crawl_source, only: [ :show, :edit, :update, :destroy, :approve, :reject ]
@@ -89,5 +88,4 @@ module Admin
       flash[:notice] = "Source and related data #{status} successfully"
       redirect_to pending_admin_crawl_sources_path
     end
-  end
 end
