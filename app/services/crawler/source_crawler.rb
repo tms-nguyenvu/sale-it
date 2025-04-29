@@ -12,7 +12,7 @@ module Crawler
         a
       ].freeze
 
-      INVALID_HREF_PREFIXES = ["#", "javascript"].freeze
+      INVALID_HREF_PREFIXES = [ "#", "javascript" ].freeze
 
       def crawl_links(url:)
         html = Crawler::HtmlFetcher.fetch(url: url, headless: false)
