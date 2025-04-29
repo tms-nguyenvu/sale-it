@@ -10,9 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_24_101402) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_26_023752) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "crawl_data_temporaries", force: :cascade do |t|
+    t.jsonb "data"
+    t.integer "data_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "crawl_sources", force: :cascade do |t|
+    t.string "source_url"
+    t.integer "source_type"
+    t.text "description"
+    t.integer "status"
+    t.integer "approval_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "roles", force: :cascade do |t|
     t.string "name"

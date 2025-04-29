@@ -8,7 +8,14 @@ module Gemini
         }
       ]
 
-      request = { contents: contents }
+      request = {
+        contents: contents,
+        generationConfig: {
+          temperature: 0.2,
+          topK: 1,
+          topP: 1
+        }
+      }
 
       # Function calling
       if options[:tools]
