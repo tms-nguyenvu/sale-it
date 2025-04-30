@@ -114,6 +114,16 @@
               <ul tabindex="0" class="dropdown-content menu bg-white rounded-box shadow border w-52 p-2
               space-y-1 z-30">
                 <li>
+                  <%= button_to admin_crawl_source_path(source),
+                                method: :patch,
+                                params: { crawl_source: { status: source.active? ? "paused" : "active" } },
+                                data: { turbo_confirm: "Change status?", turbo_stream: true },
+                                class: "flex items-center text-gray-600" do %>
+                    <i data-lucide="repeat" class="lucide mr-2 h-4 w-4"></i>
+                    <%= source.active? ? "Pause" : "Activate" %>
+                  <% end %>
+                </li>
+                <li>
                   <%= link_to admin_crawl_source_path(source),
                       data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo_stream: true },
                       class: "flex items-center text-red-600" do %>
