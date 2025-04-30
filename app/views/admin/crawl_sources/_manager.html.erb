@@ -1,0 +1,141 @@
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+      <h3 class="tracking-tight text-sm font-medium">Total Sources</h3>
+      <i data-lucide="globe" class="lucide lucide-globe h-4 w-4 text-gray-600"></i>
+    </div>
+    <div class="p-6 pt-0">
+      <div class="text-2xl font-bold">
+        <%= @crawl_sources.size %> sources
+      </div>
+      <p class="text-xs text-gray-600">
+        <%= @active_sources.count %> is active, <%= @paused_sources.count %> paused
+      </p>
+    </div>
+  </div>
+
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+      <h3 class="tracking-tight text-sm font-medium">Collected Data</h3>
+      <i data-lucide="database" class="lucide lucide-database h-4 w-4 text-gray-600"></i>
+    </div>
+    <div class="p-6 pt-0">
+      <div class="text-2xl font-bold">
+        <%= @data_temporaries_approved.count %> companies
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+      <h3 class="tracking-tight text-sm font-medium">Pending Approval</h3>
+      <i data-lucide="clock" class="lucide lucide-clock h-4 w-4 text-gray-600"></i>
+    </div>
+    <div class="p-6 pt-0">
+      <div class="text-2xl font-bold">
+        <%= @pending_approval.count %> sources
+      </div>
+      <p class="text-xs text-gray-600">
+        <%= @data_temporaries_pending.count %> companies
+      </p>
+    </div>
+  </div>
+
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+      <h3 class="tracking-tight text-sm font-medium">Crawl next</h3>
+      <i data-lucide="clock" class="lucide lucide-clock h-4 w-4 text-gray-600"></i>
+    </div>
+    <div class="p-6 pt-0">
+      <div class="text-2xl font-bold">
+        <%= (Time.now + 2.hours).strftime("%d/%m/%Y, %H:%M") %>
+      </div>
+      <div class="text-sm text-muted-foreground">
+        <%= @data_temporaries_approved.count %> source will be crawled automatically
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="rounded-box border border-base-content/5 bg-base-100">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>Source Type</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Approve</th>
+        <th>Data Collected</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @crawl_sources.each do |source| %>
+        <tr id="<%= dom_id(source) %>">
+          <td>
+            <div class="flex items-center space-x-2">
+              <a class="text-primary hover:underline truncate max-w-[220px] cursor-pointer inline-block"
+              href="<%= source.source_url %>"><%= source.source_url %></a>
+              <i data-lucide="external-link" class="lucide lucide-external-link h-3.5 w-3.5 text-gray-400"></i>
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-outline badge-primary">
+              <%= source.source_type %>
+            </span>
+          </td>
+          <td><%= source.description %></td>
+          <td>
+            <span class="badge rounded-full
+            <%= source.status == 'active' ? 'badge-info' : (source.status == 'paused' ? 'badge-warning' : '') %>">
+              <%= source.status.humanize %>
+            </span>
+          </td>
+          <td>
+            <span class="badge rounded-full <%= source.approval_status == 'approved' ? 'badge-success' :
+                                                source.approval_status == 'pending' ? 'badge-warning' :
+                                                        (source.approval_status == 'rejected' ? 'badge-error' : '') %>">
+              <%= source.approval_status.humanize %>
+            </span>
+          </td>
+
+          <td>
+            <%= source.crawl_data_temporaries.count %> companies
+          </td>
+          <td>
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="flex items-center justify-center w-10 h-10 cursor-pointer
+              hover:bg-gray-100 transition-colors rounded-md">
+                <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
+              </div>
+              <ul tabindex="0" class="dropdown-content menu bg-white rounded-box shadow border w-52 p-2
+              space-y-1 z-30">
+                <li>
+                  <%= button_to admin_crawl_source_path(source),
+                                method: :patch,
+                                params: { crawl_source: { status: source.active? ? "paused" : "active" } },
+                                data: { turbo_confirm: "Change status?", turbo_stream: true },
+                                class: "flex items-center text-gray-600" do %>
+                    <i data-lucide="repeat" class="lucide mr-2 h-4 w-4"></i>
+                    <%= source.active? ? "Pause" : "Activate" %>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to admin_crawl_source_path(source),
+                      data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo_stream: true },
+                      class: "flex items-center text-red-600" do %>
+                    <i data-lucide="trash" class="lucide mr-2 h-4 w-4"></i>
+                    Delete
+                  <% end %>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

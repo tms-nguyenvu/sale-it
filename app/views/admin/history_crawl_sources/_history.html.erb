@@ -1,0 +1,48 @@
+<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2
+focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-2xl font-semibold leading-none tracking-tight">Crawling history</h3>
+      <p class="text-sm text-gray-600">View history of recent data crawls</p>
+    </div>
+    <div class="p-6 pt-0">
+      <div id="pending_sources_container" class="space-y-4">
+        <% if @crawl_sources.any? %>
+          <% @crawl_sources.each do |source| %>
+            <% if source.approval_status != "pending" %>
+              <div id="<%= dom_id(source) %>" class="rounded-md border p-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <% if source.approval_status == "approved" %>
+                      <div class="p-2 bg-green-50 rounded-full">
+                        <i data-lucide="circle-check-big"class="lucide lucide-circle-check-big h-5 w-5 text-green-500"></i>
+                      </div>
+                    <% end %>
+                    <% if source.approval_status == "rejected" %>
+                      <div class="p-2 bg-red-50 rounded-full">
+                        <i data-lucide="circle-alert" class="lucide lucide-circle-alert h-5 w-5 text-red-500"></i>
+                      </div>
+                    <% end %>
+                    <div>
+                      <h3 class="font-medium">
+                        <%= source.source_url %>
+                      </h3>
+                      <p class="text-sm text-gray-600">
+                        <%= source.created_at.strftime("%d/%m/%Y, %H:%M") %>,
+                        <%= source.approval_status == "approved" ? "Approved" : "Rejected" %>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        <% else %>
+          <div class="text-center p-6">
+            <p class="text-gray-500">No pending sources to approve</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

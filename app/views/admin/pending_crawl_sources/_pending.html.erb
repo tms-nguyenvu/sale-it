@@ -1,0 +1,48 @@
+<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-4">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-2xl font-semibold leading-none tracking-tight">Pending Approval Data</h3>
+      <p class="text-sm text-gray-600">Review and approve the crawled data before saving it to the system</p>
+    </div>
+    <div class="p-6 pt-0">
+      <div id="pending_sources_container" class="space-y-4">
+        <% if @crawl_sources.any? %>
+          <% @crawl_sources.each do |source| %>
+            <div id="<%= dom_id(source) %>" class="rounded-md border p-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="p-2 bg-amber-50 rounded-full">
+                    <i data-lucide="clock" class="lucide lucide-clock h-5 w-5 text-amber-500"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-medium">
+                      <%= source.source_url %>
+                    </h3>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                    <%= button_to admin_pending_crawl_source_path(source),
+                        method: :patch,
+                        params: { approval_status: 'approved' },
+                        class: 'btn btn-neutral btn-outline' do %>
+                      Approve
+                    <% end %>
+                    <%= button_to admin_pending_crawl_source_path(source),
+                        method: :patch,
+                        params: { approval_status: 'rejected' },
+                        class: 'btn btn-error btn-outline' do %>
+                      Reject
+                    <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="text-center p-6">
+            <p class="text-gray-500">No pending sources to approve</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

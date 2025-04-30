@@ -23,6 +23,7 @@ module Crawler
           .uniq
       rescue StandardError => e
         Rails.logger.error("Failed to fetch links from #{url}: #{e.message}")
+        raise "Failed to fetch links"
       end
 
       def crawl_details(detail_paths: [], base_url: nil)
@@ -33,7 +34,7 @@ module Crawler
           find_main_content(doc)
         rescue StandardError => e
           Rails.logger.error("Failed to crawl detail from #{full_url}: #{e.message}")
-          nil
+          raise "Failed to crawl detail"
         end.compact
       end
 

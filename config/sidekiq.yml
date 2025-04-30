@@ -1,0 +1,11 @@
+:scheduler:
+  :schedule:
+    crawl_scheduled_sources:
+      cron: "0 */2 * * *"
+      class: "CrawlSourceJob"
+      queue: "default"
+
+    delete_pending_rejected_sources:
+      cron: "0 0 1 * *"
+      class: "DeletePendingRejectedSourcesJob"
+      queue: "default"

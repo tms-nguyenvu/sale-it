@@ -7,4 +7,12 @@ class CrawlSource < ApplicationRecord
   has_many :crawl_data_temporaries, dependent: :destroy
 
   validates :source_url, :source_type, :status, :approval_status, presence: true
+
+  scope :active_sources, -> { where(status: :active) }
+  scope :paused_sources, -> { where(status: :paused) }
+  scope :pending_approval, -> { where(approval_status: :pending) }
+  scope :approved_sources, -> { where(approval_status: :approved) }
+  scope :rejected_sources, -> { where(approval_status: :rejected) }
+  scope :scheduled_sources, -> { where(scheduled: true) }
+  scope :with_companies, -> { includes(:companies).where.not(companies: { id: nil }) }
 end

@@ -16,12 +16,9 @@ Rails.application.routes.draw do
       resources :proposals, shallow: true
     end
 
-    resources :crawl_sources do
-      post :approve, on: :member
-      post :reject, on: :member
-      get :pending, on: :collection
-      get :history, on: :collection
-    end
+    resources :crawl_sources, only: [ :index, :create, :destroy, :update ]
+    resources :pending_crawl_sources, only: [ :index, :update ]
+    resources :history_crawl_sources, only: [ :index ]
     get "dashboard", to: "dashboard#index"
   end
 
