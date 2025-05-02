@@ -16,13 +16,18 @@ class Admin::CrawlSourcesController < ApplicationController
 
     def create
       begin
-        scheduled = params[:scheduled] == "1" ? true : false
+        if CrawlSource.find_by(source_url: params[:source_url])
+          raise "Source URL already exists"
+        end
+
+        scheduled = params[:scheduled] == "1"
         Crawler::CrawlSourceService.new(params[:source_url], params[:source_type], scheduled).process
-        redirect_to pending_admin_crawl_sources_path, notice: "Source created successfully"
+        redirect_to admin_pending_crawl_sources_path, notice: "Source created successfully"
       rescue StandardError => e
-        redirect_to pending_admin_crawl_sources_path, alert: e.message
+        redirect_to admin_pending_crawl_sources_path, alert: e.message
       end
     end
+
 
     def update
       @crawl_source = CrawlSource.find(params[:id])
@@ -32,7 +37,6 @@ class Admin::CrawlSourcesController < ApplicationController
         render :edit, status: :unprocessable_entity
       end
     end
-
 
     def destroy
       @crawl_source.destroy

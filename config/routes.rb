@@ -4,11 +4,12 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  namespace :admin, path: "" do
-    resources :companies do
-      resources :contacts, shallow: true
-      resource :score_lead, only: [ :show, :edit, :update ], shallow: true
-    end
+  namespace :admin, path: "/" do
+    resources :companies
+
+    resources :potential_companies
+    resources :decision_maker_companies
+    resources :predict_ability_companies
 
     resources :leads do
       resources :emails, shallow: true

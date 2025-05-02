@@ -53,29 +53,52 @@ module Crawler
     end
 
     def extract_companies(detail_contents)
-      company_extraction_prompt = I18n.t(
-        "ai.gemini_service.company_extraction_prompt",
-        source_type: @source_type,
-        details: detail_contents
-      )
+      batched_details = detail_contents.each_slice(5).to_a
+      all_companies = []
 
-      Gemini::GenerateContent.call(prompt: company_extraction_prompt)
+      batched_details.each_with_index do |batch, i|
+        company_extraction_prompt = I18n.t(
+          "ai.gemini_service.company_extraction_prompt",
+          source_type: @source_type,
+          details: batch
+        )
+
+        begin
+          result = Gemini::GenerateContent.call(prompt: company_extraction_prompt)
+
+          # Parse the result and extract only company names
+          parsed_result = JSON.parse(result)
+          company_names = parsed_result.map { |c| c["name"] }.compact
+
+          company_analyzer_prompt = I18n.t(
+            "ai.gemini_service.potential_score_prompt",
+            companies: company_names
+          )
+
+          enriched_result = Gemini::GenerateContent.call(prompt: company_analyzer_prompt)
+          all_companies << JSON.parse(enriched_result)
+          sleep(1)
+        rescue JSON::ParserError => e
+          Rails.logger.error("[Company batch #{i}] Failed to parse company JSON: #{e.message}")
+        end
+      end
+
+      all_companies.flatten
     end
 
     def save_crawl_source_and_companies(companies)
-      @crawl_sources = CrawlSource.create!(
+      crawl_source = CrawlSource.create!(
         source_url: @source_url,
         source_type: @source_type,
         scheduled: @scheduled
       )
 
-      parsed_companies = JSON.parse(companies)
-      parsed_companies.each do |company|
-        has_valid_data = company.values.any? { |v| !v.nil? }
-        if has_valid_data
-          @crawl_sources.crawl_data_temporaries.create!(data: company)
-        else
-          Rails.logger.info("Skipping company with all null values: #{company}")
+      companies.each do |company_group|
+        company_list = company_group["companies"] || []
+        company_list.each do |company|
+          cleaned_company = company.compact
+
+          crawl_source.crawl_data_temporaries.create!(data: cleaned_company)
         end
       end
     end

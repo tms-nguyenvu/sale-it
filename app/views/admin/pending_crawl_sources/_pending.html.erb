@@ -15,9 +15,10 @@
                     <i data-lucide="clock" class="lucide lucide-clock h-5 w-5 text-amber-500"></i>
                   </div>
                   <div>
-                    <h3 class="font-medium">
-                      <%= source.source_url %>
-                    </h3>
+                    <h3 class="font-medium"><%= source.source_url %></h3>
+                    <p class="text-sm text-gray-600">
+                      <%= source.crawl_data_temporaries.count %> company - crawl from <%= source.source_type %>
+                    </p>
                   </div>
                 </div>
                 <div class="flex gap-2">

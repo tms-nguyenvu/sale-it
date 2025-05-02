@@ -3,7 +3,7 @@ class CrawlSource < ApplicationRecord
   enum :status, { active: 0, paused: 1 }, default: :active
   enum :approval_status, { pending: 0, approved: 1, rejected: 2 }, default: :pending
 
-  has_many :companies
+  has_many :companies, dependent: :destroy
   has_many :crawl_data_temporaries, dependent: :destroy
 
   validates :source_url, :source_type, :status, :approval_status, presence: true
