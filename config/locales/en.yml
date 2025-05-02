@@ -74,3 +74,62 @@ en:
             "website": "website url"
           }
         ]
+
+      potential_score_prompt: |
+        Task: Visit the official website and other reliable sources to gather company data.
+
+        Companies: %{companies}
+
+        For each company, collect and return the following combined information in one object per company.
+
+        ### Fields to include per company:
+
+        #### 1. Company Details
+        - **company**: Name of the company.
+        - **industry**: The sector or industry in which the company operates.
+        - **website**: Official website URL.
+        - **funding_round**: Most recent known funding round (e.g., Seed, Series A, Series C, Acquired, etc.).
+        - **employee_count**: Approximate number of employees.
+        - **hiring_roles_count**: Number of open job roles listed on their official site or careers page.
+
+        #### 2. Contact
+        - **contact**:
+          - **email**: A direct or general email address (e.g., contact, info, or support).
+          - **phone_number**: Company’s contact number.
+          - **name**: Full name of the CEO, CTO, or other company leader.
+          - **position**: Their role in the company (e.g., CEO, CTO, Co-founder, etc.).
+          - **is_decision_maker**: Set to `true` if the person holds a decision-making role (e.g., CEO, CTO, President, Managing Director, Founder); otherwise, `false`.
+
+        #### 3. Score Lead
+        - **score_lead**:
+          - **potential_score**: A subjective score out of 100 evaluating this company’s potential as a lead. Base it on factors such as funding stage, market growth, hiring activity, partnerships, product traction, or recent press.
+          - **note**: A concise summary justifying the score. Highlight significant insights such as recent funding, expansion news, partnerships, or unique product offerings.
+
+        ### Output Format (JSON)
+        Return a single list of companies, where each company includes all information in one object. For example:
+
+        ```json
+        {
+          "companies": [
+            {
+              "company": {
+                "name": "Example Inc.",
+                "industry": "Fintech",
+                "website": "https://example.com",
+                "funding_round": "Series B",
+                "employee_count": "200",
+                "hiring_roles_count": "12"
+              },
+              "contact": {
+                "email": "info@example.com",
+                "phone_number": "+1-555-1234",
+                "name": "Jane Doe",
+                "position": "CEO",
+                "is_decision_maker": true
+              },
+              "score_lead": {
+                "potential_score": 85,
+                "note": "Recently raised Series B funding, expanding to new markets, and actively hiring across multiple teams."
+              }
+            }
+          ]
