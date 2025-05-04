@@ -7,9 +7,9 @@ Rails.application.routes.draw do
   namespace :admin, path: "/" do
     resources :companies
 
-    resources :potential_companies
-    resources :decision_maker_companies
-    resources :predict_ability_companies
+    resources :potential_companies, only: [ :index ]
+    resources :decision_maker_companies, only: [ :index ]
+    resources :predict_ability_companies, only: [ :index ]
 
     resources :leads do
       resources :emails, shallow: true

@@ -7,7 +7,7 @@ module SidebarHelper
       { name: "Email Outreach", path: admin_dashboard_path, icon: "mail" },
       { name: "Sales Pipeline", path: admin_dashboard_path, icon: "bar-chart3" },
       { name: "Proposals", path: admin_dashboard_path, icon: "file" },
-      { name: "Team Management", path: admin_dashboard_path, icon: "users" },
+      { name: "Team Management", path: admin_dashboard_path, icon: "users" }
     ]
   end
 end
