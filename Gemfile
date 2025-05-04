@@ -85,3 +85,5 @@ gem "sidekiq", "~> 7.2"
 gem "sidekiq-scheduler", "~> 5.0", ">= 5.0.6"
 
 gem "redis", "5.0.6"
+
+gem 'pg_search'

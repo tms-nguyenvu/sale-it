@@ -1,0 +1,38 @@
+<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+focus-visible:ring-offset-2 space-y-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @contacts.each do |contact| %>
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6 pb-2">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="font-semibold tracking-tight text-lg"><%= contact.name %></h3>
+              <p class="text-sm text-muted-foreground flex items-center gap-1">
+                <i data-lucide="user" class="lucide lucide-user h-3 w-3"></i>
+                <%= contact.position %> in <%= contact.company&.name %>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 pt-0 pb-2">
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Email:</span>
+              <span><%= contact.email %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Phone number:</span>
+              <span><%= contact.phone_number %></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center p-6 pt-0">
+          <div class="flex gap-4 w-full justify-between">
+            <button class="btn btn-outline flex-1">Detail</button>
+            <button class="btn btn-neutral flex-1">Compose emails</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -74,7 +74,13 @@
     </div>
 
     <div class="space-y-4">
-      <%= render 'shared/crawl_sources_tab' %>
+    <%= render partial: "shared/tabs", locals: {
+      tabs: [
+        { label: "Data Sources", path: admin_crawl_sources_path },
+        { label: "Pending Approval", path: admin_pending_crawl_sources_path },
+        { label: "Crawl History", path: admin_history_crawl_sources_path }
+      ]
+    } %>
 
       <%=  render 'manager' %>
     </div>
