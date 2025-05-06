@@ -1,17 +1,10 @@
 class Contact < ApplicationRecord
-  include PgSearch::Model
-
   belongs_to :company
-  has_many :emails, dependent: :destroy
+  validates :name, :email, presence: true
 
-  pg_search_scope :search_full_text,
-    against: [ :name, :email ],
-    using: {
-      tsearch: {
-        prefix: true,
-        dictionary: "english"
-      }
-  }
 
+  def self.ransackable_attributes(auth_object = nil)
+    [ "name" ]
+  end
   scope :is_decision_maker, -> { where(is_decision_maker: true) }
 end

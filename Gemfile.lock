@@ -202,9 +202,6 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
-    pg_search (2.3.7)
-      activerecord (>= 6.1)
-      activesupport (>= 6.1)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -263,6 +260,10 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
+    ransack (4.3.0)
+      activerecord (>= 6.1.5)
+      activesupport (>= 6.1.5)
+      i18n
     rdoc (6.13.1)
       psych (>= 4.0.0)
     redis (5.0.6)
@@ -416,10 +417,10 @@ DEPENDENCIES
   kamal
   nokogiri
   pg (~> 1.1)
-  pg_search
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.2)
+  ransack
   redis (= 5.0.6)
   rolify
   rubocop-rails-omakase

@@ -8,4 +8,8 @@ class Email < ApplicationRecord
   has_many :email_stats, dependent: :destroy
 
   validates :subject, :content, presence: true
+
+  def self.ransackable_attributes(auth_object = nil)
+    [ "subject" ]
+  end
 end

@@ -3,18 +3,18 @@ class Admin::PotentialCompaniesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @companies = Company.where.not(name: nil)
-                        .where.not(industry: nil)
-                        .where.not(website: nil)
-                        .where.not(crawl_source_id: nil)
-                        .where.not(employee_count: nil)
-                        .where.not(hiring_roles_count: nil)
-                        .where.not(funding_round: nil)
-                        .where.not(potential_score: nil)
+    @q = Company.where.not(
+      name: nil,
+      industry: nil,
+      website: nil,
+      crawl_source_id: nil,
+      employee_count: nil,
+      hiring_roles_count: nil,
+      funding_round: nil,
+      potential_score: nil
+    ).ransack(params[:q])
 
-    if params[:search].present?
-      @companies = @companies.search_full_text(params[:search])
-    end
+    @companies = @q.result(distinct: true)
 
     respond_to do |format|
       format.html

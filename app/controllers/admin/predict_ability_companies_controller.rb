@@ -4,11 +4,9 @@ class Admin::PredictAbilityCompaniesController < ApplicationController
 
   def index
     threshold = 70
-    @companies = Company.where("potential_score >= ?", threshold)
+    @q = Company.where("potential_score >= ?", threshold).ransack(params[:q])
 
-    if params[:search].present?
-      @companies = @companies.search_full_text(params[:search])
-    end
+    @companies = @q.result(distinct: true)
 
     respond_to do |format|
       format.html
