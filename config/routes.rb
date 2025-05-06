@@ -1,15 +1,16 @@
 require "sidekiq/web"
+
 Rails.application.routes.draw do
-  devise_for :users, skip: [ :registrations ]
+  devise_for :users, skip: %i[registrations]
 
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :admin, path: "/" do
     resources :companies
 
-    resources :potential_companies, only: [ :index ]
-    resources :decision_maker_companies, only: [ :index ]
-    resources :predict_ability_companies, only: [ :index ]
+    resources :potential_companies, only: %i[index]
+    resources :decision_maker_companies, only: %i[index]
+    resources :predict_ability_companies, only: %i[index]
 
     resources :leads do
       resources :emails, shallow: true
@@ -17,9 +18,10 @@ Rails.application.routes.draw do
       resources :proposals, shallow: true
     end
 
-    resources :crawl_sources, only: [ :index, :create, :destroy, :update ]
-    resources :pending_crawl_sources, only: [ :index, :update ]
-    resources :history_crawl_sources, only: [ :index ]
+    resources :crawl_sources, only: %i[index create destroy update]
+    resources :pending_crawl_sources, only: %i[index update]
+    resources :history_crawl_sources, only: %i[index]
+
     get "dashboard", to: "dashboard#index"
   end
 

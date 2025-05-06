@@ -3,11 +3,9 @@ class Admin::DecisionMakerCompaniesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @contacts = Contact.where(is_decision_maker: true)
+    @q = Contact.where(is_decision_maker: true).ransack(params[:q])
 
-    if params[:search].present?
-      @contacts = @contacts.search_full_text(params[:search])
-    end
+    @contacts = @q.result(distinct: true)
 
     respond_to do |format|
       format.html
