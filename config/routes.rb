@@ -7,20 +7,20 @@ Rails.application.routes.draw do
   namespace :admin, path: "/" do
     resources :companies
 
-    resources :potential_companies, only: [ :index ]
-    resources :decision_maker_companies, only: [ :index ]
-    resources :predict_ability_companies, only: [ :index ]
 
-    resources :leads do
-      resources :emails, shallow: true
-      resources :tasks, shallow: true
-      resources :proposals, shallow: true
-    end
-
+    # Crawl sources
     resources :crawl_sources, only: [ :index, :create, :destroy, :update ]
     resources :pending_crawl_sources, only: [ :index, :update ]
     resources :history_crawl_sources, only: [ :index ]
     get "dashboard", to: "dashboard#index"
+
+    # Lead generation
+    resources :potential_companies, only: [ :index ]
+    resources :decision_maker_companies, only: [ :index ]
+    resources :predict_ability_companies, only: [ :index ]
+
+    # Email outreach
+    resources :emails
   end
 
   root "admin/dashboard#index"

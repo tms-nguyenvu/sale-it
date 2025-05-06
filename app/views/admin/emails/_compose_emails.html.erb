@@ -1,0 +1,99 @@
+<div class="lg:col-span-2">
+  <%= turbo_frame_tag "emails_turbo_frame" do %>
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+      <div class="flex flex-col space-y-1.5 p-6">
+        <h3 class="text-2xl font-semibold leading-none tracking-tight">Compose personalized emails</h3>
+        <p class="text-sm text-gray-600">AI will create unique emails for each company based on collected data</p>
+      </div>
+
+      <%= form_with url: admin_emails_path, method: :post, class: "p-6 pt-0 space-y-4" do |f| %>
+        <div class="space-y-2">
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Receiver</legend>
+            <% if defined?(@contact) && @contact.present? %>
+              <select class="select w-full" name="email[contact_id]" required>
+                <option value="<%= @contact.id %>" selected>
+                  <%= "#{@contact.name} (#{@contact.position} - #{@contact.company&.industry})" %>
+                </option>
+              </select>
+            <% elsif defined?(@contacts) && @contacts.present? %>
+              <select class="select w-full"
+                      onchange="if(this.value) Turbo.visit(this.value, { frame: 'emails_turbo_frame' })">
+                <option selected disabled>Select Receiver</option>
+                <% @contacts.each do |c| %>
+                  <option value="<%= new_admin_email_path(contact_id: c.id, tone: params[:tone]) %>">
+                    <%= "#{c.name} (#{c.position} - #{c.company&.industry})" %>
+                  </option>
+                <% end %>
+              </select>
+            <% else %>
+              <select class="select w-full" disabled>
+                <option>No contacts found</option>
+              </select>
+            <% end %>
+          </fieldset>
+        </div>
+
+        <div class="space-y-2">
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Subject</legend>
+            <%= f.text_field :subject, class: "input w-full", required: true,
+                  value: @contact.present? ? @emails[:subject] : "",
+                  disabled: !@contact.present? %>
+          </fieldset>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-sm font-medium">Content email</label>
+
+            <% if @contact.present? %>
+              <div class="flex gap-2">
+                <div class="dropdown dropdown-end">
+                  <div tabindex="0" role="button" class="btn">
+                    Select tone ⬇️
+                  </div>
+                  <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <% ['Professional', 'Friendly', 'Casual', 'Formal'].each do |tone| %>
+                      <li>
+                        <%= link_to tone,
+                              new_admin_email_path(contact_id: @contact.id, tone: tone.downcase),
+                              data: { turbo_frame: "emails_turbo_frame" },
+                              class: "#{'active' if params[:tone] == tone.downcase}" %>
+                      </li>
+                    <% end %>
+                  </ul>
+                </div>
+
+                <button type="button" class="btn">
+                  <i data-lucide="sparkles" class="lucide lucide-sparkles size-4"></i>
+                  Optimal AI
+                </button>
+              </div>
+            <% else %>
+              <div class="text-sm text-gray-400 italic">Please select a receiver to choose tone</div>
+            <% end %>
+          </div>
+
+          <%= f.text_area :body, class: "textarea w-full", rows: 14, required: true,
+                value: @contact.present? ? @emails[:body] : "",
+                disabled: !@contact.present? %>
+        </div>
+
+        <div class="items-center flex justify-between">
+          <div class="flex gap-2">
+            <button type="button" class="btn" <%= 'disabled' unless @contact.present? %>>Archive</button>
+            <button type="button" class="btn" <%= 'disabled' unless @contact.present? %>>Preview</button>
+          </div>
+          <div class="flex gap-2">
+            <%= link_to "Cancel", admin_emails_path,
+            class: "btn btn-outline #{'hidden' if !@contact.present?}",
+            data: { turbo_frame: "emails_turbo_frame" } %>
+            <%= f.submit "Send now", class: "btn btn-neutral", disabled: !@contact.present? %>
+          </div>
+        </div>
+
+      <% end %>
+    </div>
+  <% end %>
+</div>
