@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_04_051949) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_04_134942) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +61,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_04_051949) do
     t.boolean "scheduled", default: false
   end
 
+  create_table "emails", force: :cascade do |t|
+    t.bigint "contact_id", null: false
+    t.string "subject"
+    t.text "content"
+    t.integer "email_type"
+    t.string "tone"
+    t.datetime "sent_at", precision: nil
+    t.integer "status"
+    t.datetime "opened_at", precision: nil
+    t.datetime "replied_at", precision: nil
+    t.datetime "clicked_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id"], name: "index_emails_on_contact_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -94,4 +110,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_04_051949) do
   add_foreign_key "companies", "crawl_sources"
   add_foreign_key "contacts", "companies"
   add_foreign_key "crawl_data_temporaries", "crawl_sources", on_delete: :cascade
+  add_foreign_key "emails", "contacts"
 end
