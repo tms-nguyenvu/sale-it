@@ -19,6 +19,11 @@ class Admin::EmailsController < ApplicationController
     render :index
   end
 
+
+  def create
+    ContactMailer.outreach_email(params[:body], params[:subject]).deliver_now
+    redirect_to admin_emails_path, notice: "Email sent successfully!"
+  end
   private
 
   def email_params

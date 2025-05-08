@@ -1,32 +1,3 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
   ai:
     gemini_service:
@@ -133,3 +104,70 @@ en:
               }
             }
           ]
+
+    email_outreach:
+      generate_email_prompt: |
+        Task: Optimize the given email for higher engagement based on proven best practices.
+
+        Inputs:
+        - Subject: %{subject}
+        - Body: %{body}
+        - Tone: %{tone}
+
+        Goals:
+        - Improve the subject line to maximize open rates.
+        - Refine the body to increase click-throughs and replies.
+        - Suggest a clearer call to action (CTA) if needed.
+        - Ensure the content matches professional outreach standards.
+        - Keep the tone persuasive but not aggressive.
+        - Keep it concise and under 120 words.
+
+        Output format (JSON):
+        {
+          "subject": "[Optimized subject line]",
+          "body": "[Optimized body text]"
+        }
+
+        Notes:
+        - Output must be valid JSON.
+        - Do not include explanations or additional formatting.
+
+
+
+  email_content:
+    subject:
+      friendly: "Hey %{name}, a quick note from TOMOSIA here."
+      casual: "%{name}, check this out!"
+      formal: "Business Opportunity for %{name}"
+      professional: "Introducing a tailored solution for %{name}"
+      default: "Introducing a tailored solution for %{name}"
+    greeting:
+      friendly: "Hi %{name},"
+      casual: "Hey %{name},"
+      formal: "Dear %{name},"
+      professional: "Hello %{name},"
+      default: "Hello %{name},"
+    intro:
+      friendly: "Hope you're doing great! Just wanted to share something that might be helpful for %{company}."
+      casual: "Yo! Quick note about something cool we're working on — might be useful for %{company}."
+      formal: "I am writing to formally introduce our services and how they may align with the goals of %{company}."
+      professional: "I wanted to reach out regarding our solutions that can streamline operations at %{company}."
+      default: "I wanted to reach out regarding campaigns. We believe our solutions can benefit %{company}."
+    value_proposition:
+      friendly: "We've built a tool that makes things easier for teams like yours — saving time, boosting results, and eliminating those annoying manual tasks that slow everyone down."
+      casual: "Basically, it's a no-hassle way to get stuff done faster without breaking a sweat. Our clients in %{industry} are seeing some pretty sweet results."
+      formal: "Our solutions are specifically designed to support organizations within the %{industry} industry in achieving operational excellence and cost efficiency. Our proprietary methodology has demonstrated substantial ROI for enterprises similar to %{company}."
+      professional: "Our product helps companies like yours in the %{industry} industry to improve efficiency by 30% and reduce costs by up to 25%. We've worked with similar companies and understand the unique challenges you face."
+      default: "Our product helps companies like yours in the %{industry} industry to improve efficiency and reduce costs."
+    cta:
+      friendly: "Want to hop on a quick call this week to chat about how this could work for your team? I'm free most afternoons."
+      casual: "Wanna catch up sometime soon? I can show you how this works in about 15 minutes."
+      formal: "Please advise a convenient time for a brief discussion at your earliest availability. I would be pleased to provide a comprehensive overview of our solutions and their potential application to %{company}'s objectives."
+      professional: "Let me know a suitable time to discuss further. I'd be happy to schedule a brief demo showing how our solutions can address your specific needs."
+      default: "Let me know a suitable time to discuss further."
+    signature:
+      friendly: "Cheers,\n(Your Name)"
+      casual: "Thanks!\n(Your Name)"
+      formal: "Sincerely,\n(Your Name)"
+      professional: "Best regards,\n(Your Name)"
+      default: "Regards,\n(Your Name)"

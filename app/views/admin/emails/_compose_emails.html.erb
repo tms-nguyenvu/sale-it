@@ -64,11 +64,17 @@
                     <% end %>
                   </ul>
                 </div>
+                  <%= link_to admin_email_optimizations_path(
+                          subject: @emails[:subject],
+                          body: @emails[:body],
+                          tone: params[:tone],
+                          contact_id: @contact&.id
+                      ),
+                      class: "btn",
+                      data: { turbo_method: :post, turbo_frame: "emails_turbo_frame" } do %>
+                    <i data-lucide="sparkles" class="lucide lucide-sparkles size-4"></i> Optimal AI
+                  <% end %>
 
-                <button type="button" class="btn">
-                  <i data-lucide="sparkles" class="lucide lucide-sparkles size-4"></i>
-                  Optimal AI
-                </button>
               </div>
             <% else %>
               <div class="text-sm text-gray-400 italic">Please select a receiver to choose tone</div>
