@@ -1,0 +1,31 @@
+<div class="space-y-6">
+
+
+  <div class="space-y-6 mt-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Email Outreach</h1>
+        <p class="text-gray-600">Write personalized emails and messages with AI</p>
+      </div>
+    </div>
+  </div>
+
+    <div class="space-y-4">
+      <%= render partial: "shared/tabs", locals: {
+        tabs: [
+          { label: "Compose emails", path: admin_emails_path },
+          { label: "Email campaigns", path: admin_emails_path },
+          { label: "Effective analysis", path: admin_emails_path }
+        ]
+      } %>
+
+      <div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+      focus-visible:ring-offset-2 space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <%= render 'admin/emails/compose_emails' %>
+          <%= render 'admin/emails/suggestion_emails'%>
+        </div>
+        <%= render 'admin/emails/history_emails' %>
+      </div>
+    </div>
+</div>

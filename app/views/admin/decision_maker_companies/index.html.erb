@@ -1,0 +1,22 @@
+<div class="space-y-6">
+  <%= render 'shared/lead_generation_filter',
+              header: "Decision Makers",
+              subheader: "Find decision makers from your contacts",
+              url: admin_decision_maker_companies_path,
+              turbo_frame: "decision_maker_turbo_frame",
+              placeholder: "Search for decision makers..." %>
+
+  <div class="space-y-4">
+    <%= render partial: "shared/tabs", locals: {
+      tabs: [
+        { label: "Potential company", path: admin_potential_companies_path },
+        { label: "Decision maker", path: admin_decision_maker_companies_path },
+        { label: "Predict possibilities", path: admin_predict_ability_companies_path }
+      ]
+    } %>
+
+    <%= turbo_frame_tag "decision_maker_turbo_frame" do %>
+      <%= render 'admin/decision_maker_companies/list_decision_maker_companies' %>
+    <% end %>
+  </div>
+</div>

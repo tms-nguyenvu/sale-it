@@ -1,0 +1,41 @@
+<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+focus-visible:ring-offset-2 space-y-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @companies.each do |company| %>
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6 pb-2">
+          <div class="flex justify-between items-start">
+            <h3 class="font-semibold tracking-tight text-lg max-w-[250px] truncate"><%= company.name %></h3>
+            <div class="badge badge-neutral badge-outline truncate"><%= company.industry %></div>
+          </div>
+        </div>
+        <div class="p-6 pt-0 pb-2">
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Size:</span>
+              <span><%= company.employee_count %> Employees</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Funding round:</span>
+              <span><%= company.funding_round %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Currently hiring:</span>
+              <span class="text-primary font-medium"><%= company.hiring_roles_count %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Potential points:</span>
+              <span><%= company.potential_score %>/100</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center p-6 pt-0">
+          <div class="flex gap-4 w-full justify-between">
+            <button class="btn btn-outline flex-1">Detail</button>
+            <button class="btn btn-neutral flex-1">Add to Pipeline</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -12,6 +12,7 @@ class ApproveCrawlSourceJob < ApplicationJob
       data = temp_data.data || {}
       company_data = data["company"]
       contact_data = data["contact"]
+      score_lead_data = data["score_lead"]
 
       puts "data: #{data.inspect}"
       name = company_data["name"].to_s.strip
@@ -28,6 +29,8 @@ class ApproveCrawlSourceJob < ApplicationJob
           funding_round: company_data["funding_round"],
           employee_count: company_data["employee_count"],
           hiring_roles_count: company_data["hiring_roles_count"],
+          potential_score: score_lead_data["potential_score"],
+          note: score_lead_data["note"],
           crawl_source_id: crawl_source.id
         )
 

@@ -1,0 +1,22 @@
+<div class="space-y-6">
+  <%= render 'shared/lead_generation_filter',
+            header: "Predict Ability",
+            subheader: "Find and analyze potential customers with AI",
+            url: admin_predict_ability_companies_path,
+            turbo_frame: "predict_ability_companies_turbo_frame",
+            placeholder: "Search..." %>
+
+  <div class="space-y-4">
+    <%= render partial: "shared/tabs", locals: {
+      tabs: [
+        { label: "Potential company", path: admin_potential_companies_path },
+        { label: "Decision maker", path: admin_decision_maker_companies_path },
+        { label: "Predict possibilities", path: admin_predict_ability_companies_path }
+      ]
+    } %>
+
+    <%= turbo_frame_tag "predict_ability_companies_turbo_frame" do %>
+      <%= render 'admin/predict_ability_companies/list_predict_ability_companies' %>
+    <% end %>
+  </div>
+</div>
