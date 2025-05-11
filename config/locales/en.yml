@@ -51,33 +51,56 @@ en:
 
         Companies: %{companies}
 
-        For each company, collect and return the following combined information in one object per company.
+        For each company, collect and return all the information in a **single object**.
+
+        ---
 
         ### Fields to include per company:
 
         #### 1. Company Details
-        - **company**: Name of the company.
-        - **industry**: The sector or industry in which the company operates.
-        - **website**: Official website URL.
-        - **funding_round**: Most recent known funding round (e.g., Seed, Series A, Series C, Acquired, etc.).
-        - **employee_count**: Approximate number of employees.
-        - **hiring_roles_count**: Number of open job roles listed on their official site or careers page.
+        - **company**:
+          - **name**: Company name.
+          - **industry**: Industry or sector.
+          - **website**: Official website URL.
+          - **funding_round**: Latest known funding round (e.g., Seed, Series A, Acquired, etc.).
+          - **employee_count**: Approximate number of employees.
 
-        #### 2. Contact
+        #### 2. Jobs Information
+        - **jobs**:
+          - **count**: Total number of open roles.
+          - **careers_page_url**: URL to the careers/jobs page.
+          - **listings**: List of open roles. Each role includes:
+            - **title**
+            - **location** (e.g., Remote, New York, Hybrid)
+            - **level** (e.g., Junior, Senior, Intern)
+            - **employment_type** (Full-time, Part-time, Contract, etc.)
+            - **tech_stack**: List of relevant technologies or tools. Use ["Not specified"] if unknown.
+            - **posted_date**: Use "YYYY-MM-DD" format or "Not specified".
+            - **application_url**
+
+        #### 3. Contact
         - **contact**:
-          - **email**: A direct or general email address (e.g., contact, info, or support).
-          - **phone_number**: Company’s contact number.
-          - **name**: Full name of the CEO, CTO, or other company leader.
-          - **position**: Their role in the company (e.g., CEO, CTO, Co-founder, etc.).
-          - **is_decision_maker**: Set to `true` if the person holds a decision-making role (e.g., CEO, CTO, President, Managing Director, Founder); otherwise, `false`.
+          - **email**
+          - **phone_number**
+          - **name**: Name of a senior leader (e.g., CEO, CTO).
+          - **position**
+          - **is_decision_maker**: `true` if they hold a decision-making position.
 
-        #### 3. Score Lead
+        #### 4. Score Lead
         - **score_lead**:
-          - **potential_score**: A subjective score out of 100 evaluating this company’s potential as a lead. Base it on factors such as funding stage, market growth, hiring activity, partnerships, product traction, or recent press.
-          - **note**: A concise summary justifying the score. Highlight significant insights such as recent funding, expansion news, partnerships, or unique product offerings.
+          - **potential_score**: From 0 to 100.
+          - **note**: Justify the score based on:
+            - Hiring activity
+            - Tech stack alignment
+            - Recent funding or growth
+            - Company stage (startup, enterprise, etc.)
+            - Product-market fit
+            - Fit with your business goals
+
+        ---
 
         ### Output Format (JSON)
-        Return a single list of companies, where each company includes all information in one object. For example:
+        Return a JSON object with a `companies` array:
 
         ```json
         {
@@ -88,8 +111,22 @@ en:
                 "industry": "Fintech",
                 "website": "https://example.com",
                 "funding_round": "Series B",
-                "employee_count": "200",
-                "hiring_roles_count": "12"
+                "employee_count": "200"
+              },
+              "jobs": {
+                "count": 5,
+                "careers_page_url": "https://example.com/careers",
+                "listings": [
+                  {
+                    "title": "Senior Backend Engineer",
+                    "location": "Remote",
+                    "level": "Senior",
+                    "employment_type": "Full-time",
+                    "tech_stack": ["Node.js", "AWS", "Docker"],
+                    "posted_date": "2025-04-15",
+                    "application_url": "https://example.com/careers/senior-backend-engineer"
+                  }
+                ]
               },
               "contact": {
                 "email": "info@example.com",
@@ -100,10 +137,13 @@ en:
               },
               "score_lead": {
                 "potential_score": 85,
-                "note": "Recently raised Series B funding, expanding to new markets, and actively hiring across multiple teams."
+                "note": "Raised Series B recently, hiring across engineering, and tech stack aligns well."
               }
             }
           ]
+        }
+        ```
+
 
     email_outreach:
       generate_email_prompt: |

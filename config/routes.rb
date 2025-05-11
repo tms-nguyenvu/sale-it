@@ -10,7 +10,8 @@ Rails.application.routes.draw do
 
     # Crawl sources
     resources :crawl_sources, only: %i[index create destroy update]
-    resources :pending_crawl_sources, only: %i[index update]
+    resources :list_sources, only: %i[index update]
+    resources :crawl_data_temporaries, only: %i[update]
     resources :history_crawl_sources, only: %i[index]
 
     get "dashboard", to: "dashboard#index"

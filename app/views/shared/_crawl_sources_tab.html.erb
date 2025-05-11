@@ -2,8 +2,8 @@
   <div role="tablist" class="tabs tabs-border">
     <%= link_to "Data Sources", admin_crawl_sources_path,
     class: "tab #{current_page?(admin_crawl_sources_path) ? 'tab-active' : ''}" %>
-    <%= link_to "Pending Approval", admin_pending_crawl_sources_path,
-    class: "tab #{current_page?(admin_pending_crawl_sources_path) ? 'tab-active' : ''}" %>
+    <%= link_to "Pending Approval", admin_list_sources_path,
+    class: "tab #{current_page?(admin_list_sources_path) ? 'tab-active' : ''}" %>
     <%= link_to "Crawl History", admin_history_crawl_sources_path,
     class: "tab #{current_page?(admin_history_crawl_sources_path) ? 'tab-active' : ''}" %>
   </div>

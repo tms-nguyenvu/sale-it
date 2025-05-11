@@ -16,15 +16,11 @@ class Admin::CrawlSourcesController < ApplicationController
 
     def create
       begin
-        if CrawlSource.find_by(source_url: params[:source_url])
-          raise "Source URL already exists"
-        end
-
         scheduled = params[:scheduled] == "1"
         Crawler::CrawlSourceService.new(params[:source_url], params[:source_type], scheduled).process
-        redirect_to admin_pending_crawl_sources_path, notice: "Source created successfully"
+        redirect_to admin_list_sources_path, notice: "Source created successfully"
       rescue StandardError => e
-        redirect_to admin_pending_crawl_sources_path, alert: e.message
+        redirect_to admin_list_sources_path, alert: e.message
       end
     end
 

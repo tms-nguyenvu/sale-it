@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_04_134942) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_123140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,6 +77,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_04_134942) do
     t.index ["contact_id"], name: "index_emails_on_contact_id"
   end
 
+  create_table "jobs", force: :cascade do |t|
+    t.string "title"
+    t.string "level"
+    t.string "location"
+    t.string "employment_type"
+    t.string "tech_stack", default: [], array: true
+    t.date "posted_date"
+    t.string "application_url"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_jobs_on_company_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -111,4 +125,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_04_134942) do
   add_foreign_key "contacts", "companies"
   add_foreign_key "crawl_data_temporaries", "crawl_sources", on_delete: :cascade
   add_foreign_key "emails", "contacts"
+  add_foreign_key "jobs", "companies"
 end
