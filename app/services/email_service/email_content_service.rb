@@ -51,11 +51,21 @@ module EmailService
       I18n.t("email_content.value_proposition.#{tone}", company: contact.company.name, industry: contact.company.industry,
       default: I18n.t("email_content.value_proposition.default", company: contact.company.name, industry: contact.company.industry))
     end
-
     def generate_cta(contact, tone)
-      I18n.t("email_content.cta.#{tone}", company: contact.company.name, default: I18n.t("email_content.cta.default",
-      company: contact.company.name))
+      slug_name = contact.name.to_s.parameterize
+      target = "https://tomosia.com.vn/"
+      tracking_url = "http://localhost:3000/email_tracking?contact_id=#{contact.id}&target=#{CGI.escape(target)}"
+
+
+      vars = {
+        company: contact.company.name,
+        name: slug_name,
+        url: tracking_url
+      }
+
+      I18n.t("email_content.cta.#{tone}", **vars, default: I18n.t("email_content.cta.default", **vars)).html_safe
     end
+
 
     def generate_signature(tone)
       I18n.t("email_content.signature.#{tone}", default: I18n.t("email_content.signature.default"))

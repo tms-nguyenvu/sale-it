@@ -21,9 +21,25 @@ class Admin::EmailsController < ApplicationController
 
 
   def create
+    begin
+      Email.create!(
+        subject: params[:subject],
+        body: params[:body],
+        contact_id: params[:email][:contact_id],
+        user_id: current_user.id,
+        status: :sent,
+        tone: params[:tone] || "professional"
+      )
     ContactMailer.outreach_email(params[:body], params[:subject]).deliver_now
+
     redirect_to admin_emails_path, notice: "Email sent successfully!"
+    rescue StandardError => e
+    logger.error "Error sending email: #{e.message}"
+    flash.alert = e.message
+    redirect_to admin_emails_path, alert: "Error sending email: #{e.message}"
+    end
   end
+
   private
 
   def email_params
