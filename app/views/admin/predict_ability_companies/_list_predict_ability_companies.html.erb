@@ -1,0 +1,64 @@
+    <div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+    focus-visible:ring-offset-2 space-y-4">
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6">
+          <h3 class="text-2xl font-semibold leading-none tracking-tight">Predict the likelihood of becoming a customer</h3>
+          <p class="text-sm text-gray-600">AI analyzes data from past customers and scores potential leads for new businesses</p>
+        </div>
+        <div class="p-6 pt-0">
+          <div class="space-y-6">
+            <div class="border-t pt-4">
+              <h4 class="font-medium mb-4">Top Prediction Results</h4>
+
+              <div class="mb-6 flex items-center justify-between">
+                <span class="text-sm font-medium text-gray-600">Showing companies with high likelihood of conversion</span>
+
+              </div>
+
+              <div class="space-y-2">
+                <% if @companies.any? %>
+                  <% @companies.each do |company| %>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div class="flex items-center gap-3">
+                        <div class="bg-primary/10 p-2 rounded-full">
+                          <i data-lucide="building2" class="lucide lucide-building2 h-5 w-5 text-primary"></i>
+                        </div>
+                        <div>
+                          <h5 class="font-medium text-gray-900">
+                            <%= company.name || "Unknown Company" %>
+                          </h5>
+                          <div class="flex items-center gap-2 text-sm text-gray-500">
+                            <span><%= company.industry || "Unknown industry" %></span>
+                            <span class="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <span><%= company.employee_count || "Unknown size" %> employees</span>
+                            <span class="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <span><%= company.hiring_roles_count || "Unknown size" %> roles available</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-6">
+                        <div class="text-right">
+                          <span class="text-sm font-medium text-gray-700">Likelihood score</span>
+                          <div class="flex items-center gap-1 justify-end">
+                            <span class="text-lg font-semibold text-primary"><%= company.potential_score %></span>
+                            <i data-lucide="trending-up" class="lucide lucide-trending-up h-4 w-4 text-green-500"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="flex flex-col items-center justify-center py-12 text-center">
+                    <div class="bg-gray-100 p-3 rounded-full mb-3">
+                      <i data-lucide="search-x" class="lucide lucide-search-x h-6 w-6 text-gray-400"></i>
+                    </div>
+                    <h5 class="font-medium text-gray-800 mb-1">No prediction results found</h5>
+                    <p class="text-sm text-gray-500">Try adjusting your filters or adding more company data</p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

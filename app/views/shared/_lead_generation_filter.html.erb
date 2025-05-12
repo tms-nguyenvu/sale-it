@@ -1,0 +1,25 @@
+<div class="space-y-6 mt-4">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight"><%= header %></h1>
+      <p class="text-gray-600"><%= subheader %></p>
+    </div>
+  </div>
+
+  <div class="space-y-6 mt-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <%= search_form_for @q, url: url, method: :get, data: { turbo_frame: turbo_frame }, class: "flex items-center gap-4" do |form| %>
+        <label class="input">
+          <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+          <%= form.text_field :name_cont, value: params[:search], placeholder: "Search by Name" %>
+        </label>
+        <div>
+          <%= button_tag type: "submit", class: "btn btn-neutral" do %>
+            <i data-lucide="filter" class="lucide lucide-filter h-4 w-4"></i>
+            Apply
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

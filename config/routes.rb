@@ -1,29 +1,30 @@
 require "sidekiq/web"
+
 Rails.application.routes.draw do
-  devise_for :users, skip: [ :registrations ]
+  devise_for :users, skip: %i[registrations]
 
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :admin, path: "/" do
     resources :companies
 
-    resources :potential_companies
-    resources :decision_maker_companies
-    resources :predict_ability_companies
+    # Crawl sources
+    resources :crawl_sources, only: %i[index create destroy update]
+    resources :pending_crawl_sources, only: %i[index update]
+    resources :history_crawl_sources, only: %i[index]
 
-    resources :leads do
-      resources :emails, shallow: true
-      resources :tasks, shallow: true
-      resources :proposals, shallow: true
-    end
-
-    resources :crawl_sources, only: [ :index, :create, :destroy, :update ]
-    resources :pending_crawl_sources, only: [ :index, :update ]
-    resources :history_crawl_sources, only: [ :index ]
     get "dashboard", to: "dashboard#index"
+
+    # Lead generation
+    resources :potential_companies, only: %i[index]
+    resources :decision_maker_companies, only: %i[index]
+    resources :predict_ability_companies, only: %i[index]
+
+    # Email outreach
+    resources :emails
+    resources :email_optimizations, only: [ :create ]
   end
 
   root "admin/dashboard#index"
-
   mount Sidekiq::Web => "/sidekiq"
 end
