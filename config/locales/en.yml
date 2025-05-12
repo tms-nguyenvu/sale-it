@@ -200,11 +200,13 @@ en:
       professional: "Our product helps companies like yours in the %{industry} industry to improve efficiency by 30% and reduce costs by up to 25%. We've worked with similar companies and understand the unique challenges you face."
       default: "Our product helps companies like yours in the %{industry} industry to improve efficiency and reduce costs."
     cta:
-      friendly: "Want to hop on a quick call this week to chat about how this could work for your team? I'm free most afternoons."
-      casual: "Wanna catch up sometime soon? I can show you how this works in about 15 minutes."
-      formal: "Please advise a convenient time for a brief discussion at your earliest availability. I would be pleased to provide a comprehensive overview of our solutions and their potential application to %{company}'s objectives."
-      professional: "Let me know a suitable time to discuss further. I'd be happy to schedule a brief demo showing how our solutions can address your specific needs."
-      default: "Let me know a suitable time to discuss further."
+      friendly: "Let’s jump on a quick call this week to discuss how we can help your team. I’m available most afternoons! <a href=\"%{url}\">Click here to book a time</a>."
+      casual: "How about a quick 15-minute call to show you how this works? Let me know what time works for you! <a href=\"%{url}\">Schedule a call here</a>."
+      formal: "Please let me know a convenient time for a brief discussion. I would be happy to walk you through how our solutions can support %{company}. <a href=\"%{url}\">Book a time here</a>."
+      professional: "I'd love to set up a time for a demo to show you how we can tailor our solutions to meet your needs. Let me know when you're free! <a href=\"%{url}\">Click here to schedule a demo</a>."
+      default: "Let me know a suitable time to discuss how our solutions can benefit your business. <a href=\"%{url}\">Click here to arrange a meeting</a>."
+
+
     signature:
       friendly: "Cheers,\n(Your Name)"
       casual: "Thanks!\n(Your Name)"
