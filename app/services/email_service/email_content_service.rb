@@ -54,7 +54,7 @@ module EmailService
     def generate_cta(contact, tone)
       slug_name = contact.name.to_s.parameterize
       target = "https://tomosia.com.vn/"
-      tracking_url = "http://localhost:3000/email_tracking?contact_id=#{contact.id}&target=#{CGI.escape(target)}"
+      tracking_url = "http://localhost:3000/email_trackings?contact_id=#{contact.id}&target=#{CGI.escape(target)}"
 
 
       vars = {
