@@ -4,7 +4,25 @@
   </div>
   <div class="p-6 pt-0">
     <div class="space-y-3">
-      <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"></div>
+      <% if @history_emails.present? %>
+        <% @history_emails.each do |email| %>
+          <div class="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i data-lucide="mail" class="lucide lucide-mail h-5 w-5 text-gray-400"></i>
+              <div>
+                <div class="font-medium">
+                  <%= email.subject %>
+                </div>
+                <div class="text-sm text-gray-600">
+                  To: <%= email.contact.name %> • <%= time_ago_in_words(email.sent_at || email.created_at) %> ago
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-gray-500">No emails sent recently.</p>
+      <% end %>
     </div>
   </div>
 </div>

@@ -5,12 +5,15 @@ class Email < ApplicationRecord
 
   belongs_to :contact
   belongs_to :user
-  has_many :email_stats, dependent: :destroy
   has_many :email_trackings, dependent: :destroy
   has_many :email_replies, dependent: :destroy
 
 
   validates :subject, :body, presence: true
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[contact]
+  end
 
   def self.ransackable_attributes(auth_object = nil)
     [ "subject" ]
