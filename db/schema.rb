@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_11_104848) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_11_132241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,6 +59,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_104848) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "scheduled", default: false
+  end
+
+  create_table "email_replies", force: :cascade do |t|
+    t.bigint "email_id", null: false
+    t.bigint "contact_id", null: false
+    t.bigint "user_id", null: false
+    t.text "body"
+    t.datetime "received_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contact_id"], name: "index_email_replies_on_contact_id"
+    t.index ["email_id"], name: "index_email_replies_on_email_id"
+    t.index ["user_id"], name: "index_email_replies_on_user_id"
   end
 
   create_table "email_trackings", force: :cascade do |t|
@@ -132,6 +145,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_11_104848) do
   add_foreign_key "companies", "crawl_sources"
   add_foreign_key "contacts", "companies"
   add_foreign_key "crawl_data_temporaries", "crawl_sources", on_delete: :cascade
+  add_foreign_key "email_replies", "contacts"
+  add_foreign_key "email_replies", "emails"
+  add_foreign_key "email_replies", "users"
   add_foreign_key "email_trackings", "emails"
   add_foreign_key "emails", "contacts"
   add_foreign_key "emails", "users"

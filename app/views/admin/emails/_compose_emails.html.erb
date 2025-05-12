@@ -80,6 +80,8 @@
               <div class="text-sm text-gray-400 italic">Please select a receiver to choose tone</div>
             <% end %>
           </div>
+        <%= hidden_field_tag :tone, params[:tone].presence || "professional" %>
+
 
           <%= f.text_area :body, class: "textarea w-full", rows: 14, required: true,
                 value: @contact.present? ? @emails[:body] : "",
