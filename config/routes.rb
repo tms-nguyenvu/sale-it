@@ -24,7 +24,9 @@ Rails.application.routes.draw do
     # Email outreach
     resources :emails
     resources :email_optimizations, only: %i[create]
+    resources :email_replies, only: %i[index create]
     resources :email_trackings, only: %i[index create]
+    resources :email_analytics, only: %i[index]
   end
 
   root "admin/dashboard#index"

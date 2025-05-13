@@ -172,6 +172,33 @@ en:
         - Output must be valid JSON.
         - Do not include explanations or additional formatting.
 
+    email_suggestions:
+      generate_email_prompt: |
+        Task: Optimize the given email for higher engagement based on proven best practices.
+
+        Inputs:
+        - Subject: %{subject}
+        - Body: %{body}
+
+        Goals:
+        - Improve the subject line to maximize open rates.
+        - Refine the body to increase click-throughs and replies.
+        - Suggest a clearer call to action (CTA) if needed.
+        - Ensure the content matches professional outreach standards.
+        - Keep the tone persuasive but not aggressive.
+        - Keep it concise and under 120 words.
+
+        Output format (JSON):
+        {
+          "subject": "[Optimized subject line]",
+          "body": "[Optimized body text]"
+        }
+
+        Notes:
+        - Output must be valid JSON.
+        - Do not include explanations or additional formatting.
+
+
 
 
   email_content:
