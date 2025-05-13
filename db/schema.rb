@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_13_015117) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_13_073114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -120,6 +120,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_015117) do
     t.index ["company_id"], name: "index_jobs_on_company_id"
   end
 
+  create_table "leads", force: :cascade do |t|
+    t.bigint "contact_id", null: false
+    t.bigint "company_id", null: false
+    t.integer "status"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "manager_id"
+    t.index ["company_id"], name: "index_leads_on_company_id"
+    t.index ["contact_id"], name: "index_leads_on_contact_id"
+    t.index ["manager_id"], name: "index_leads_on_manager_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -161,4 +174,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_015117) do
   add_foreign_key "emails", "contacts"
   add_foreign_key "emails", "users"
   add_foreign_key "jobs", "companies"
+  add_foreign_key "leads", "companies"
+  add_foreign_key "leads", "contacts"
+  add_foreign_key "leads", "users", column: "manager_id"
 end

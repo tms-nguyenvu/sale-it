@@ -2,7 +2,7 @@ class Contact < ApplicationRecord
   belongs_to :company
   validates :name, :email, presence: true
   has_many :emails, dependent: :destroy
-
+  has_many :leads, dependent: :destroy
   def self.ransackable_associations(auth_object = nil)
     [ "emails" ]
   end

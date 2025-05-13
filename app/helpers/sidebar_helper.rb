@@ -5,7 +5,7 @@ module SidebarHelper
       { name: "Crawl Sources", path: admin_crawl_sources_path, icon: "globe" },
       { name: "Lead Generation", path: admin_potential_companies_path, icon: "search" },
       { name: "Email Outreach", path: admin_emails_path, icon: "mail" },
-      { name: "Sales Pipeline", path: admin_dashboard_path, icon: "bar-chart3" },
+      { name: "Sales Pipeline", path: admin_sales_path, icon: "bar-chart3" },
       { name: "Proposals", path: admin_dashboard_path, icon: "file" },
       { name: "Team Management", path: admin_dashboard_path, icon: "users" }
     ]

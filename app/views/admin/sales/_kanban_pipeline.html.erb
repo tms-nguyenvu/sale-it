@@ -1,0 +1,204 @@
+<div class="space-y-6 mt-4">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+    <div data-controller="drag" class="bg-gray-100 rounded-lg p-3">
+      <div data-drag-target="list" class="kanban-column space-y-3" data-status="new_lead">
+        <div class="flex justify-between items-center mb-3">
+          <div class="font-medium">New Lead</div>
+          <div class="badge badge-outline badge-primary"><%= @new_leads.count %></div>
+        </div>
+        <% @new_leads.each do |lead| %>
+          <div class="item pb-4" data-id="<%= lead.id %>">
+            <div class="rounded-lg border text-card-foreground shadow-sm bg-white">
+              <div class="p-4">
+                <div class="flex justify-between items-center mb-2">
+                  <div class="font-medium"><%= lead.company.name %></div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn bg-white border-none">
+                      <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                      <li><a>Details</a></li>
+                      <li><a>Edit</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500 mb-3"><%= lead.company.industry %></div>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="user" class="lucide lucide-user h-3 w-3"></i>
+                    <%= lead.contact.name %>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="clock" class="lucide lucide-clock h-3 w-3"></i>
+                    <%= time_ago_in_words(lead.contact.created_at) + ' ago' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div data-controller="drag" class="bg-gray-100 rounded-lg p-3">
+      <div data-drag-target="list" class="kanban-column space-y-3" data-status="sent">
+        <div class="flex justify-between items-center mb-3">
+          <div class="font-medium">Email Sent</div>
+          <div class="badge badge-outline badge-info"><%= @email_sent_leads.count %></div>
+        </div>
+        <% @email_sent_leads.each do |lead| %>
+          <div class="item pb-4" data-id="<%= lead.id %>">
+            <div class="rounded-lg border text-card-foreground shadow-sm bg-white">
+              <div class="p-4">
+                <div class="flex justify-between items-center mb-2">
+                  <div class="font-medium"><%= lead.company.name %></div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn bg-white border-none">
+                      <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                      <li><a>Details</a></li>
+                      <li><a>Edit</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500 mb-3"><%= lead.company.industry %></div>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="user" class="lucide lucide-user h-3 w-3"></i>
+                    <%= lead.contact.name %>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="clock" class="lucide lucide-clock h-3 w-3"></i>
+                    <%= time_ago_in_words(lead.contact.created_at) + ' ago' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div data-controller="drag" class="bg-gray-100 rounded-lg p-3">
+      <div data-drag-target="list" class="kanban-column space-y-3" data-status="replied">
+        <div class="flex justify-between items-center mb-3">
+          <div class="font-medium">Email Replied</div>
+          <div class="badge badge-outline badge-success"><%= @email_replied_leads.count %></div>
+        </div>
+        <% @email_replied_leads.each do |lead| %>
+          <div class="item pb-4" data-id="<%= lead.id %>" >
+            <div class="rounded-lg border text-card-foreground shadow-sm bg-white">
+              <div class="p-4">
+                <div class="flex justify-between items-center mb-2">
+                  <div class="font-medium"><%= lead.company.name %></div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn bg-white border-none">
+                      <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                      <li><a>Details</a></li>
+                      <li><a>Edit</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500 mb-3"><%= lead.company.industry %></div>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="user" class="lucide lucide-user h-3 w-3"></i>
+                    <%= lead.contact.name %>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="clock" class="lucide lucide-clock h-3 w-3"></i>
+                    <%= time_ago_in_words(lead.contact.created_at) + ' ago' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div data-controller="drag" class="bg-gray-100 rounded-lg p-3">
+      <div data-drag-target="list" class="kanban-column space-y-3" data-status="demo">
+        <div class="flex justify-between items-center mb-3">
+          <div class="font-medium">Demo</div>
+          <div class="badge badge-outline badge-warning"><%= @demo_leads.count %></div>
+        </div>
+        <% @demo_leads.each do |lead| %>
+          <div class="item pb-4" data-id="<%= lead.id %>" >
+            <div class="rounded-lg border text-card-foreground shadow-sm bg-white">
+              <div class="p-4">
+                <div class="flex justify-between items-center mb-2">
+                  <div class="font-medium"><%= lead.company.name %></div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn bg-white border-none">
+                      <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                      <li><a>Details</a></li>
+                      <li><a>Edit</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500 mb-3"><%= lead.company.industry %></div>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="user" class="lucide lucide-user h-3 w-3"></i>
+                    <%= lead.contact.name %>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="clock" class="lucide lucide-clock h-3 w-3"></i>
+                    <%= time_ago_in_words(lead.contact.created_at) + ' ago' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div data-controller="drag" class="bg-gray-100 rounded-lg p-3">
+      <div data-drag-target="list" class="kanban-column space-y-3" data-status="negotiate">
+        <div class="flex justify-between items-center mb-3">
+          <div class="font-medium">Negotiation</div>
+          <div class="badge badge-outline badge-error"><%= @negotiate_leads.count %></div>
+        </div>
+        <% @negotiate_leads.each do |lead| %>
+          <div class="item pb-4" data-id="<%= lead.id %>" >
+            <div class="rounded-lg border text-card-foreground shadow-sm bg-white">
+              <div class="p-4">
+                <div class="flex justify-between items-center mb-2">
+                  <div class="font-medium"><%= lead.company.name %></div>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn bg-white border-none">
+                      <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                      <li><a>Details</a></li>
+                      <li><a>Edit</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-500 mb-3"><%= lead.company.industry %></div>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="user" class="lucide lucide-user h-3 w-3"></i>
+                    <%= lead.contact.name %>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <i data-lucide="clock" class="lucide lucide-clock h-3 w-3"></i>
+                    <%= time_ago_in_words(lead.contact.created_at) + ' ago' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
