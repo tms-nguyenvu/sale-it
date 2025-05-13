@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :admin, path: "/" do
-    resources :companies
+    # Companies
+    resources :companies do
+      resources :contacts, only: %i[index]
+    end
 
     # Crawl sources
     resources :crawl_sources, only: %i[index create destroy update]
@@ -27,6 +30,10 @@ Rails.application.routes.draw do
     resources :email_replies, only: %i[index create]
     resources :email_trackings, only: %i[index create]
     resources :email_analytics, only: %i[index]
+
+    # Sale pipeline
+    resources :sales, only: %i[index create]
+    resources :leads, only: %i[index update]
   end
 
   root "admin/dashboard#index"
