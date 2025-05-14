@@ -1,6 +1,7 @@
 class Admin::SalesController < ApplicationController
   layout "admin"
   before_action :authenticate_user!
+  before_action :set_lead, only: [:update]
 
   POTENTIAL_SCORE_THRESHOLD = 70
 
@@ -24,10 +25,33 @@ class Admin::SalesController < ApplicationController
     end
   end
 
+  def update
+    if @lead.update(sale_params)
+      redirect_to admin_sales_path, notice: "Sale was successfully updated."
+    else
+      flash[:alert] = @lead.errors.full_messages.to_sentence
+      redirect_to admin_sales_path
+    end
+  end
 
   private
 
+  def set_lead
+    @lead = Lead.find(params[:id])
+  end
+
   def sale_params
-    params.permit(:company_id, :contact_id, :manager_id, :note)
+    params.require(:lead).permit(
+      :company_id,
+      :contact_id,
+      :manager_id,
+      :note,
+      :project_name,
+      :status,
+      :priority,
+      :start_date,
+      :end_date,
+      :tag_list
+    )
   end
 end

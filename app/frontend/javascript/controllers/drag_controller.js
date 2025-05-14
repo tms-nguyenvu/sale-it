@@ -15,7 +15,6 @@ export default class extends Controller {
 
   async end(event) {
     const leadId = event.item.dataset.id
-    // Lấy status từ vùng kéo đến (to) thay vì vùng kéo đi (from)
     const newStatus = event.to.dataset.status
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')

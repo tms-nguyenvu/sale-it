@@ -1,0 +1,134 @@
+<dialog id="modal_<%= lead.id %>" class="modal modal-bottom sm:modal-middle">
+
+  <form method="dialog" class="modal-backdrop">
+    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+  </form>
+
+  <div class="modal-box max-w-lg sm:max-w-[700px]">
+    <div class="space-y-6">
+
+      <div class="flex flex-col" data-controller="project-name">
+        <div class="flex justify-between items-center">
+          <h2 data-project-name-target="display" class="text-2xl font-semibold text-gray-800"><%= lead.project_name %></h2>
+          <div data-project-name-target="edit" class="hidden">
+            <%= form_with model: lead, url: admin_sale_path(lead), method: :patch, class: "flex items-center", local: true do |f| %>
+              <%= f.text_field :project_name,
+                value: lead.project_name,
+                class: "input input-sm input-bordered w-full max-w-xs",
+                required: true,
+                data: { project_name_target: "input" }
+              %>
+              <%= f.submit "Update", class: "btn btn-sm btn-primary ml-2" %>
+            <% end %>
+          </div>
+          <div class="tooltip tooltip-left" data-tip="Edit project name">
+            <button class="btn btn-ghost btn-sm" data-action="click->project-name#toggleEdit">
+              <i data-lucide="edit" class="h-5 w-5 text-gray-500"></i>
+            </button>
+          </div>
+        </div>
+        <div class="badge badge-neutral badge-outline mt-2"><%= lead.status.humanize %></div>
+      </div>
+
+      <%= form_with model: lead, url: admin_sale_path(lead), method: :patch, class: "space-y-6" do |f| %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Manager</legend>
+            <%= f.select :manager_id,
+              options_from_collection_for_select(
+                User.all,
+                :id,
+                ->(user) { "#{user.email} (#{user.roles.first&.name&.humanize&.downcase || 'No Role'})" },
+                lead.manager_id
+              ),
+              { prompt: "Select Manager" },
+              class: "select select-bordered w-full",
+              required: true
+            %>
+            <p class="text-xs text-red-500 hidden validator-hint">Manager is required</p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Stage</legend>
+            <%= f.select :status,
+              options_for_select(
+                [
+                  ["New Lead", "new_lead"],
+                  ["Sent Email", "sent"],
+                  ["Replied", "replied"],
+                  ["Demo", "demo"],
+                  ["Negotiation", "negotiation"],
+                ]
+              ),
+              {},
+              class: "select select-bordered w-full"
+            %>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Priority</legend>
+            <%= f.select :priority,
+              options_for_select(Lead.priorities.keys.map { |p| [p.humanize, p] }, lead.priority),
+              {},
+              class: "select select-bordered w-full",
+              required: true
+            %>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Tags</legend>
+            <%= f.text_field :tag_list,
+              value: lead.tag_list.join(', '),
+              placeholder: "e.g. hot, follow-up, big-deal",
+              class: "input input-bordered w-full"
+            %>
+            <p class="text-xs text-gray-500">Separate tags with commas</p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Start Date</legend>
+            <%= f.date_field :start_date,
+              value: lead.start_date,
+              class: "input input-bordered w-full",
+              required: true
+            %>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">End Date</legend>
+            <%= f.date_field :end_date,
+              value: lead.end_date,
+              class: "input input-bordered w-full"
+            %>
+          </fieldset>
+        </div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Notes</legend>
+            <%= f.text_area :note,
+              value: lead.note,
+              class: "textarea textarea-bordered w-full h-32"
+            %>
+          </fieldset>
+
+          <fieldset class="md:col-span-2">
+            <legend class="fieldset-legend">Contact Information</legend>
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <p class="text-sm"><strong>Name:</strong> <%= lead.contact.name %></p>
+              <p class="text-sm"><strong>Email:</strong> <%= lead.contact.email %></p>
+              <p class="text-sm"><strong>Phone:</strong> <%= lead.contact.phone_number %></p>
+              <p class="text-sm"><strong>Company:</strong> <%= lead.company.name %></p>
+              <p class="text-sm"><strong>Industry:</strong> <%= lead.company.industry %></p>
+            </div>
+          </fieldset>
+
+        <div class="flex justify-end gap-3 pt-6">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('modal_<%= lead.id %>').close()">
+            Cancel
+          </button>
+          <%= f.submit "Save Changes", class: "btn btn-neutral" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</dialog>

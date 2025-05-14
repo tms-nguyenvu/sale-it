@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     resources :email_analytics, only: %i[index]
 
     # Sale pipeline
-    resources :sales, only: %i[index create]
+    resources :sales, only: %i[index create update]
     resources :leads, only: %i[index update]
   end
 
