@@ -87,3 +87,5 @@ gem "sidekiq-scheduler", "~> 5.0", ">= 5.0.6"
 gem "redis", "5.0.6"
 
 gem "ransack"
+
+gem "acts-as-taggable-on"
