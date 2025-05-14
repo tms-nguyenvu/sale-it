@@ -1,7 +1,7 @@
 class Admin::SalesController < ApplicationController
   layout "admin"
   before_action :authenticate_user!
-  before_action :set_lead, only: [:update]
+  before_action :set_lead, only: [ :update ]
 
   POTENTIAL_SCORE_THRESHOLD = 70
 
