@@ -33,7 +33,7 @@ Rails.application.routes.draw do
 
     # Sale pipeline
     resources :sales, only: %i[index create update]
-    resources :leads, only: %i[index update]
+    resources :leads, only: %i[index create update]
   end
 
   root "admin/dashboard#index"

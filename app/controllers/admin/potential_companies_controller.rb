@@ -12,7 +12,7 @@ class Admin::PotentialCompaniesController < ApplicationController
       hiring_roles_count: nil,
       funding_round: nil,
       potential_score: nil
-    ).ransack(params[:q])
+    ).includes(:jobs, :contacts, :leads).ransack(params[:q])
 
     @companies = @q.result(distinct: true)
 

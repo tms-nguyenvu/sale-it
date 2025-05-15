@@ -3,7 +3,8 @@ class Admin::EmailsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @contacts = Contact.is_decision_maker
+    @leads = Lead.where(status: "new_lead")
+    @contacts = Contact.where(id: @leads.pluck(:contact_id))
     @emails = EmailService::EmailContentService.new(@contacts, nil, current_user).generate_content(params[:tone] || "professional")
     @history_emails = Email.all
 
@@ -28,6 +29,7 @@ class Admin::EmailsController < ApplicationController
 
 
   def new
+    @selected_tone = params[:tone]&.downcase || "professional"
     if params[:contact_id].present?
       @contact = Contact.find(params[:contact_id])
     else
@@ -41,7 +43,7 @@ class Admin::EmailsController < ApplicationController
 
   def create
     begin
-      Email.create!(
+      email =  Email.create!(
         subject: params[:subject],
         body: params[:body],
         contact_id: params[:email][:contact_id],
@@ -50,6 +52,20 @@ class Admin::EmailsController < ApplicationController
         tone: params[:tone].to_s || "professional",
         sent_at: Time.current
       )
+      lead = Lead.find_by(contact_id: email.contact_id)
+      if lead
+        lead.update(status: "sent")
+        GenerateLeadSuggestionJob.perform_later(lead.id)
+        Rails.logger.info("Updated Lead ID #{lead.id} to status: email_sent")
+      else
+        contact = Contact.find(email.contact_id)
+        lead = Lead.create!(
+          contact_id: email.contact_id,
+          company_id: contact.company_id,
+          status: "sent"
+        )
+        Rails.logger.warn("No Lead found for contact_id: #{email.contact_id}")
+      end
       ContactMailer.outreach_email(params[:body], params[:subject]).deliver_now
       redirect_to admin_emails_path, notice: "Email sent successfully!"
     rescue StandardError => e

@@ -1,39 +1,148 @@
-<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-focus-visible:ring-offset-2 space-y-4">
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="mt-6 space-y-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <% @companies.each do |company| %>
-      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-        <div class="flex flex-col space-y-1.5 p-6 pb-2">
-          <div class="flex justify-between items-start">
-            <h3 class="font-semibold tracking-tight text-lg max-w-[250px] truncate"><%= company.name %></h3>
-            <div class="badge badge-neutral badge-outline truncate"><%= company.industry %></div>
+      <div class="card bg-white border rounded-xl shadow-lg">
+        <div class="card-body p-5 space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900 truncate max-w-[200px]"><%= company.name %></h3>
+            <div class="badge badge-neutral bg-gray-100 text-gray-700 border-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">
+              <%= company.industry %>
+            </div>
           </div>
-        </div>
-        <div class="p-6 pt-0 pb-2">
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span class="text-gray-400">Size:</span>
+
+          <div class="space-y-2 text-sm text-gray-600">
+            <div class="flex items-center gap-2">
+              <i data-lucide="users" class="lucide lucide-users h-4 w-4 text-gray-500"></i>
               <span><%= company.employee_count %> Employees</span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Funding round:</span>
-              <span><%= company.funding_round %></span>
+            <div class="flex items-center gap-2">
+              <i data-lucide="briefcase" class="lucide lucide-briefcase h-4 w-4 text-gray-500"></i>
+              <span><%= company.jobs.count %> Jobs</span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Currently hiring:</span>
-              <span class="text-primary font-medium"><%= company.hiring_roles_count %></span>
+            <div class="flex items-center gap-2">
+              <i data-lucide="check-circle" class="lucide lucide-check-circle h-4 w-4 text-gray-500"></i>
+              <span>
+                Potential:
+                <span class="badge <%= company.potential_score >= 80 ? 'badge-success' : company.potential_score >= 50 ? 'badge-warning' : 'badge-error' %> text-white text-xs font-medium px-2 py-0.5">
+                  <%= company.potential_score || 0 %>/100
+                </span>
+              </span>
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Potential points:</span>
-              <span><%= company.potential_score %>/100</span>
-            </div>
+            <% decision_maker = company.contacts.find { |c| c.is_decision_maker } %>
+            <% if decision_maker %>
+              <div class="flex items-center gap-2">
+                <i data-lucide="user" class="lucide lucide-user h-4 w-4 text-gray-500"></i>
+                <span class="truncate"><%= decision_maker.name %></span>
+              </div>
+            <% end %>
           </div>
-        </div>
-        <div class="flex items-center p-6 pt-0">
-          <div class="flex gap-4 w-full justify-between">
-            <button class="btn btn-outline flex-1">Detail</button>
-            <button class="btn btn-neutral flex-1">Add to Pipeline</button>
+          <div class="flex items-center gap-2 !mt-0">
+              <i data-lucide="folder" class="lucide lucide-folder h-4 w-4 text-gray-500"></i>
+              <% lead = company.leads.first %>
+              <% if lead %>
+                <span class="badge badge-success text-white text-xs font-medium px-2 py-0.5">
+                  Lead ID <%= lead.id %> (<%= lead.status&.humanize %>)
+                </span>
+              <% else %>
+                <span class="badge badge-outline text-gray-500 text-xs font-medium px-2 py-0.5">
+                  No Lead
+                </span>
+              <% end %>
           </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-gray-100">
+            <button class="btn btn-outline text-gray-700 hover:bg-gray-100"
+                    onclick="document.getElementById('modal_<%= company.id %>').showModal()">
+              Details
+            </button>
+            <%= button_to "Add Lead",
+                          admin_leads_path(company_id: company.id),
+                          method: :post,
+                          data: { turbo: false },
+                          class: "btn btn-neutral" %>
+          </div>
+
+          <dialog id="modal_<%= company.id %>" class="modal">
+            <div class="modal-box bg-white rounded-xl max-w-[700px] p-6">
+              <h3 class="text-xl font-bold text-gray-900"><%= company.name %></h3>
+              <div class="mt-4 space-y-4 text-sm text-gray-600">
+                <div>
+                  <span class="font-medium">Industry:</span> <%= company.industry %>
+                </div>
+                <div>
+                  <span class="font-medium">Website:</span>
+                  <%= link_to company.website, company.website, class: "text-blue-600 hover:underline", target: "_blank" %>
+                </div>
+                <div>
+                  <span class="font-medium">Employee Count:</span> <%= company.employee_count %>
+                </div>
+                <div>
+                  <span class="font-medium">Funding Round:</span> <%= company.funding_round || "N/A" %>
+                </div>
+                <div>
+                  <span class="font-medium">Potential Score:</span>
+                  <span class="text-green-600 font-semibold"><%= company.potential_score || 0 %>/100</span>
+                </div>
+                <div>
+                  <span class="font-medium">Note:</span>
+                  <span class="text-gray-500"><%= company.note || "No note available" %></span>
+                </div>
+
+                <div>
+                  <span class="font-medium">Decision Maker:</span>
+                  <% if decision_maker %>
+                    <div class="text-sm mt-1">
+                      <span class="font-semibold text-gray-800"><%= decision_maker.name %></span>
+                      <span class="text-gray-500">(<%= decision_maker.position %>)</span>
+                      <div class="text-gray-500 truncate"><%= decision_maker.email %></div>
+                      <% if decision_maker.phone_number %>
+                        <div class="text-gray-500">Phone: <%= decision_maker.phone_number %></div>
+                      <% end %>
+                    </div>
+                  <% else %>
+                    <span class="text-gray-400 italic">No decision maker found</span>
+                  <% end %>
+                </div>
+
+                <% lead = company.leads.first %>
+                <% if lead %>
+                  <div>
+                    <span class="font-medium">Lead:</span>
+                    <span class="text-gray-800">ID <%= lead.id %> (<%= lead.status&.humanize %>)</span>
+                    <% if lead.project_name %>
+                      <div class="text-gray-500">Project: <%= lead.project_name %></div>
+                    <% end %>
+                  </div>
+                <% end %>
+
+                <div>
+                  <span class="font-medium">Open Jobs (<%= company.jobs.count %>):</span>
+                  <% if company.jobs.any? %>
+                    <ul class="list-disc pl-5 mt-1 space-y-2 text-sm text-gray-600">
+                      <% company.jobs.order(posted_date: :desc).each do |job| %>
+                        <li>
+                          <span class="font-semibold text-gray-800"><%= job.title %></span>
+                          <span class="text-gray-500">(<%= job.level %>)</span>
+                          <div class="text-gray-500">Tech Stack: <%= job.tech_stack.join(", ") %></div>
+                          <div class="text-gray-500">Posted: <%= job.posted_date&.strftime("%b %d, %Y") || "N/A" %></div>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% else %>
+                    <span class="text-gray-400 italic">No open jobs</span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="modal-action mt-6">
+                <form method="dialog">
+                  <button class="btn btn-outline">Close</button>
+                </form>
+              </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
         </div>
       </div>
     <% end %>

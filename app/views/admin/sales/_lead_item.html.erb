@@ -2,7 +2,9 @@
   <div class="rounded-lg border <%= lead.end_date && lead.end_date < Date.today ? 'border-error bg-red-50 opacity-70' : 'border-gray-200 bg-white' %> shadow-sm hover:shadow-md transition-shadow duration-200">
     <div class="p-4">
       <div class="flex justify-between items-center mb-3">
-        <div class="font-semibold text-gray-800 text-base"><%= lead.project_name || lead.company.name %></div>
+        <div class="font-semibold text-gray-800 text-base"><%= lead.project_name || lead.company.name %>
+        <strong>(#<%= lead.id %>)</strong>
+        </div>
         <div class="flex items-center gap-2">
           <% if lead.end_date && lead.end_date < Date.today %>
             <span class="badge badge-error badge-sm">Expired</span>
