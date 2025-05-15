@@ -20,7 +20,7 @@
               <%= form_with model: Lead.new, url: admin_sales_path, method: :post, class: "space-y-6" do |f| %>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <fieldset class="fieldset space-y-2">
-                    <legend class="fieldset-legend">Project Name</legend>
+                    <legend class="fieldset-legend py-0">Project Name</legend>
                     <%= f.text_field :project_name,
                         class: "input w-full validator",
                         required: true,
@@ -29,7 +29,7 @@
                   </fieldset>
 
                   <fieldset class="fieldset space-y-2">
-                    <legend class="fieldset-legend">Companies</legend>
+                    <legend class="fieldset-legend py-0">Companies</legend>
                     <%= f.select :company_id,
                         options_from_collection_for_select(@companies, :id, :name),
                         { prompt: "Select Company" },
@@ -41,7 +41,7 @@
                   </fieldset>
 
                   <fieldset class="fieldset space-y-2">
-                    <legend class="fieldset-legend">Contacts</legend>
+                    <legend class="fieldset-legend py-0">Contacts</legend>
                     <%= f.select :contact_id,
                         [],
                         { prompt: "Select Contact" },
@@ -52,7 +52,7 @@
                   </fieldset>
 
                   <fieldset class="fieldset space-y-2">
-                    <legend class="fieldset-legend">Manager</legend>
+                    <legend class="fieldset-legend py-0">Manager</legend>
                     <%= f.select :manager_id,
                         options_from_collection_for_select(
                           User.all,
@@ -66,7 +66,7 @@
                   </fieldset>
 
                   <fieldset class="fieldset space-y-2 md:col-span-2">
-                    <legend class="fieldset-legend">Note</legend>
+                    <legend class="fieldset-legend py-0">Note</legend>
                     <%= f.text_area :note,
                         class: "textarea h-24 w-full",
                         placeholder: "Note..." %>
@@ -74,10 +74,10 @@
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4">
-                  <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('my_modal_2').close()">
+                  <button type="button" class="btn btn-outline" onclick="document.getElementById('my_modal_2').close()">
                     Cancel
                   </button>
-                  <%= f.submit "Create", class: "btn bg-black text-white border-black btn-sm" %>
+                  <%= f.submit "Create", class: "btn bg-black text-white border-black" %>
                 </div>
               <% end %>
             </div>
@@ -90,4 +90,5 @@
     </div>
   </div>
   <%= render 'admin/sales/kanban_pipeline' %>
+  <%= render 'admin/sales/ai_suggestion' %>
 </div>

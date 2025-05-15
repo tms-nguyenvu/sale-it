@@ -14,11 +14,14 @@ class Admin::SalesController < ApplicationController
     @email_replied_leads = Lead.where(status: 2)
     @demo_leads = Lead.where(status: 3)
     @negotiate_leads = Lead.where(status: 4)
+
+    @lead_suggestions = Lead.where.not(suggestions: nil)
   end
 
   def create
     leads = Lead.new(sale_params)
     if leads.save
+      GenerateLeadSuggestionJob.perform_later(leads.id)
       redirect_to admin_sales_path, notice: "Sale was successfully created."
     else
       redirect_to admin_sales_path, alert: "Failed to create sale."
@@ -27,6 +30,7 @@ class Admin::SalesController < ApplicationController
 
   def update
     if @lead.update(sale_params)
+      GenerateLeadSuggestionJob.perform_later(@lead.id)
       redirect_to admin_sales_path, notice: "Sale was successfully updated."
     else
       flash[:alert] = @lead.errors.full_messages.to_sentence
