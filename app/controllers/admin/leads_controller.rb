@@ -7,6 +7,7 @@ class Admin::LeadsController < ApplicationController
 
   def update
     if @lead.update(lead_params)
+      GenerateLeadSuggestionJob.perform_later(@lead.id)
       render json: { status: "success", message: "Lead updated successfully", lead: @lead }
     else
       render json: { status: "error", message: "Unable to update lead" }, status: :unprocessable_entity

@@ -199,6 +199,53 @@ en:
         - Do not include explanations or additional formatting.
 
 
+      generate_suggestions_prompt: |
+        Task:
+          Based on the input customer data in a sales pipeline, 
+          analyze the interaction history and current stage, 
+          then suggest the next best action the salesperson should take to maximize the chance of closing the deal.
+          Also, predict the win probability of the deal based on customer behavior.
+
+        Inputs:
+          - Current Stage: %{status}  # The current stage of the lead (e.g., new_lead, sent, replied, demo, negotiate, closed)
+          - Last Contact Date: %{last_contact_date}  # The date the salesperson last contacted the lead
+          - Interaction Count: %{interaction_count}  # Total number of interactions with the lead
+          - Last Customer Response: %{last_customer_response}  # The last response from the customer (e.g., Interested, Needs more info)
+          - Priority: %{priority}  # The lead's priority (low, medium, high)
+          - Last Interaction Type: %{last_interaction}  # The type of last interaction (e.g., email, call, meeting, proposal)
+
+        Output format (JSON):
+          {
+            "suggested_action": "string (next best action, e.g., follow-up, call, send proposal)",
+            "reasoning": "string (brief explanation)",
+            "win_probability": "number (0-100, estimated chance of winning the deal based on the interaction history and stage)"
+          }
+
+        Notes:
+          - Use the given variables to infer the best course of action.
+          - Tailor the suggestion to the customer’s current stage and past interaction.
+          - Consider the lead's priority, interaction frequency, and last response when making the suggestion.
+          - Output must be valid JSON.
+          - Keep explanation brief and helpful.
+
+      generate_suggestions_action_prompt: |
+        Task: 
+        You are an AI assistant helping with outreach email campaigns. Based on the email content and the reply received,
+        suggest the most appropriate next action for the campaign manager to take.
+
+        Input:
+        %{ai_input}
+
+        Requirements:
+        - Suggest a specific next action (e.g. send follow-up email, adjust timing, change CTA, stop emailing, etc.)
+        - Justify the action based on the reply and the original email
+        - Keep the suggestion concise and actionable
+
+        Output format (JSON):
+        {
+          "suggested_action": "string",
+          "reasoning": "string"
+        }
 
 
   email_content:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_14_024041) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_14_150617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_024041) do
     t.datetime "received_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "suggested_action"
+    t.string "reasoning"
     t.index ["contact_id"], name: "index_email_replies_on_contact_id"
     t.index ["email_id"], name: "index_email_replies_on_email_id"
     t.index ["user_id"], name: "index_email_replies_on_user_id"
@@ -79,6 +81,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_024041) do
     t.jsonb "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "suggested_action"
+    t.string "reasoning"
     t.index ["email_id"], name: "index_email_suggestions_on_email_id"
   end
 
@@ -135,8 +139,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_024041) do
     t.string "project_name"
     t.date "start_date"
     t.date "end_date"
+    t.bigint "email_reply_id"
+    t.jsonb "suggestions"
     t.index ["company_id"], name: "index_leads_on_company_id"
     t.index ["contact_id"], name: "index_leads_on_contact_id"
+    t.index ["email_reply_id"], name: "index_leads_on_email_reply_id"
     t.index ["manager_id"], name: "index_leads_on_manager_id"
   end
 
@@ -214,6 +221,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_024041) do
   add_foreign_key "jobs", "companies"
   add_foreign_key "leads", "companies"
   add_foreign_key "leads", "contacts"
+  add_foreign_key "leads", "email_replies"
   add_foreign_key "leads", "users", column: "manager_id"
   add_foreign_key "taggings", "tags"
 end
