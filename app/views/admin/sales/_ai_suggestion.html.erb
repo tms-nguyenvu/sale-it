@@ -1,22 +1,139 @@
-<div class="rounded-lg border bg-card text-card-foreground shadow-sm mt-6">
-  <div class="flex flex-col space-y-1.5 p-6">
-    <h3 class="text-2xl font-semibold leading-none tracking-tight">Suggested next action</h3>
-    <p class="text-sm text-muted-foreground">AI suggests priority actions based on pipeline status</p>
+<div class="mt-6 rounded-xl border bg-white">
+  <div class="p-6">
+    <h3 class="text-xl font-bold text-gray-900">Suggested Next Action</h3>
+    <p class="mt-1 text-sm text-gray-500">AI-driven priority actions based on pipeline status</p>
   </div>
-  <div class="p-6 pt-0">
+  <div class="px-6 pb-6">
     <div class="space-y-4">
       <% @lead_suggestions.each do |lead| %>
         <% suggestion = JSON.parse(lead.suggestions || "{}") %>
-        <div class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50">
-          <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-green-600">
-            <i data-lucide="sparkles" class="lucide lucide-sparkles h-4 w-4"></i>
+        <% badge_class = case lead.status
+                        when "new_lead" then "badge-primary bg-blue-100 text-blue-700 border-blue-200"
+                        when "sent" then "badge-info bg-sky-100 text-sky-700 border-sky-200"
+                        when "replied" then "badge-accent bg-green-100 text-green-700 border-green-200"
+                        when "demo" then "badge-warning bg-yellow-100 text-yellow-700 border-yellow-200"
+                        when "negotiate" then "badge-error bg-red-100 text-red-700 border-red-200"
+                        when "closed" then "badge-success bg-teal-100 text-teal-700 border-teal-200"
+                        else "badge-ghost bg-gray-100 text-gray-600 border-gray-200"
+                        end %>
+
+        <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 
+        transition-all hover:bg-gray-50 hover:shadow-sm">
+          <div class="flex items-start gap-4">
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-green-600">
+              <i data-lucide="sparkles" class="lucide lucide-sparkles h-4 w-4"></i>
+            </div>
+            <div class="space-y-1">
+              <h4 class="text-base font-semibold text-gray-800"><%= suggestion["suggested_action"] %></h4>
+              <p class="text-sm text-gray-600 line-clamp-2"><%= suggestion["reasoning"] %></p>
+              <div class="text-sm font-medium text-gray-700">
+                Win Probability: <span class="text-primary"><%= suggestion["win_probability"] %>%</span>
+              </div>
+            </div>
           </div>
-          <div class="space-y-2">
-            <h4 class="font-medium"><%= suggestion["suggested_action"] %></h4>
-            <p class="text-sm text-gray-600"><%= suggestion["reasoning"] %></p>
-            <strong class="text-sm">Win probability: <%= suggestion["win_probability"] %>%</strong>
+          <div class="flex items-center gap-3">
+            <button class="btn btn-sm btn-neutral" onclick="document.getElementById('detail_modal_<%= lead.id %>').showModal()">
+              <i data-lucide="list-collapse" class="lucide lucide-list-collapse size-5"></i>
+              Details
+            </button>
           </div>
         </div>
+
+        <dialog id="detail_modal_<%= lead.id %>" class="modal">
+          <div class="modal-box max-w-3xl rounded-2xl bg-white shadow-xl p-8">
+            <div class="flex items-center justify-between">
+              <h3 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <i data-lucide="briefcase" class="lucide lucide-briefcase size-5 text-primary"></i>
+                Lead #<%= lead.id %> Details
+              </h3>
+              <span class="badge <%= badge_class %> text-sm font-semibold px-3 py-1 rounded-full capitalize">
+                <%= lead.status&.humanize %>
+              </span>
+            </div>
+
+            <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+              <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
+                <i data-lucide="info" class="lucide lucide-info size-5 text-primary"></i>
+                Lead Information
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="hash" class="lucide lucide-hash size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">ID:</span>
+                  <p><%= lead.id %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="star" class="lucide lucide-star size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">Priority:</span>
+                  <p><%= lead.priority&.humanize || "N/A" %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="check-circle" class="lucide lucide-check-circle size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">Outcome:</span>
+                  <p><%= lead.outcome&.humanize || "N/A" %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="clock" class="lucide lucide-clock size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">Last Interaction:</span>
+                  <p><%= lead.last_interaction || "N/A" %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="calendar" class="lucide lucide-calendar size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">Start Date:</span>
+                  <p><%= lead.start_date || "-" %></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="calendar-x" class="lucide lucide-calendar-x size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">End Date:</span>
+                  <p><%= lead.end_date || "-" %></p>
+                </div>
+                <div class="col-span-1 md:col-span-2 flex items-center gap-2">
+                  <i data-lucide="file-text" class="lucide lucide-file-text size-5 text-primary"></i>
+                  <span class="font-medium text-gray-700">Note:</span>
+                  <p class="line-clamp-3"><%= lead.note.presence || "No notes" %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+              <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2 mb-4">
+                <i data-lucide="lightbulb" class="lucide lucide-lightbulb size-5 text-primary"></i>
+                AI Suggestion
+              </h4>
+              <div class="space-y-3 text-sm text-gray-600">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="target" class="lucide flex-shrink-0 lucide-target size-5 text-primary"></i>
+                  <div>
+                    <span class="font-medium text-gray-700">Suggested Action:</span>
+                    <p><%= suggestion["suggested_action"] %></p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="message-square" class="lucide flex-shrink-0 lucide-message-square size-5 text-primary"></i>
+                  <div>
+                    <span class="font-medium text-gray-700">Reasoning:</span>
+                    <p class="line-clamp-3"><%= suggestion["reasoning"] %></p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i data-lucide="percent" class="lucide flex-shrink-0 lucide-percent size-5 text-primary"></i>
+                    <div class="font-medium text-gray-700">Win Probability: <%= suggestion["win_probability"] %>%</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-action mt-6">
+              <form method="dialog">
+                <button class="btn btn-neutral">
+                  Close
+                </button>
+              </form>
+            </div>
+          </div>
+          <form method="dialog" class="modal-backdrop">
+            <button>Close</button>
+          </form>
+        </dialog>
       <% end %>
     </div>
   </div>

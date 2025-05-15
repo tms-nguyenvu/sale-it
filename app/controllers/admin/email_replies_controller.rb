@@ -1,4 +1,3 @@
-# app/controllers/admin/email_replies_controller.rb
 class Admin::EmailRepliesController < ApplicationController
   layout "admin"
   before_action :authenticate_user!
@@ -11,6 +10,8 @@ class Admin::EmailRepliesController < ApplicationController
 
   def create
     email = Email.find_by(id: params[:email_id])
+    lead = Lead.find_by(contact_id: email.contact_id)
+
     unless email
       redirect_to admin_email_replies_path, alert: "Email not found." and return
     end
@@ -20,8 +21,16 @@ class Admin::EmailRepliesController < ApplicationController
       contact_id: email.contact_id,
       user_id: current_user.id,
       body: params[:body],
-      received_at: Time.current
+      received_at: Time.current,
+      lead_id: lead.id
     )
+    if lead
+      lead.update(status: "replied")
+      GenerateLeadSuggestionJob.perform_later(lead.id)
+      Rails.logger.info("Updated Lead ID #{lead.id} to status: email_sent")
+    else
+      Rails.logger.warn("No Lead found for contact_id: #{email.contact_id}")
+    end
 
     if @reply.save
       ai_input = {
@@ -51,6 +60,7 @@ class Admin::EmailRepliesController < ApplicationController
 
       redirect_to admin_email_replies_path, notice: "Reply was successfully created."
     else
+      Rails.logger.error("Failed to create reply: #{@reply.errors.full_messages}")
       redirect_to admin_email_replies_path, alert: "Failed to create reply."
     end
   rescue JSON::ParserError, StandardError => e

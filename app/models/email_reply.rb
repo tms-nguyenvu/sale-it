@@ -3,5 +3,5 @@ class EmailReply < ApplicationRecord
   belongs_to :contact
   belongs_to :user
 
-  has_many :leads
+  belongs_to :lead
 end

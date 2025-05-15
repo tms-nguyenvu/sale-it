@@ -5,6 +5,7 @@ class Email < ApplicationRecord
 
   belongs_to :contact
   belongs_to :user
+  belongs_to :lead, optional: true
   has_many :email_trackings, dependent: :destroy
   has_many :email_replies, dependent: :destroy
   has_one :email_suggestion, dependent: :destroy
