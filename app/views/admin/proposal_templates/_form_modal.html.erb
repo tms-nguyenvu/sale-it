@@ -1,0 +1,72 @@
+<dialog id="<%= modal_id %>" class="modal">
+  <div class="modal-box max-w-lg sm:max-w-[700px]">
+    <div class="flex flex-col space-y-2 text-center sm:text-left">
+      <h2 class="text-2xl font-semibold text-gray-900"><%= title %></h2>
+      <p class="text-sm text-gray-500">Build professional proposals with customizable sections</p>
+    </div>
+
+    <div class="mt-6 space-y-6" data-controller="sections">
+      <%= form_with url: url, method: method, local: false,
+      scope: :proposal_template, class: "space-y-6" do |f| %>
+        <div>
+          <fieldset class="space-y-2">
+            <legend class="text-sm font-medium text-gray-700">Template Name</legend>
+            <%= f.text_field :name, class: "input w-full", required: true,
+                placeholder: "E.g., Enterprise Solution Proposal",
+                value: local_assigns[:proposal_template]&.name %>
+            <p class="text-xs text-red-600 hidden validator-hint">Template name is required</p>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="space-y-2">
+            <legend class="text-sm font-medium text-gray-700">Description</legend>
+            <%= f.text_area :description, class: "textarea w-full h-32",
+                placeholder: "E.g., Comprehensive solutions for large-scale enterprises",
+                value: local_assigns[:proposal_template]&.description %>
+          </fieldset>
+        </div>
+
+        <div data-sections-target="container" class="space-y-4">
+          <% if local_assigns[:proposal_template]&.template_sections&.any? %>
+            <% proposal_template.template_sections.each_with_index do |section, index| %>
+              <div class="section-group border border-gray-200 p-5 rounded-lg bg-white shadow-sm 
+              space-y-4 transition-all duration-200">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">Section Title</label>
+                  <input type="text" name="proposal_template[template_sections_attributes][<%= index %>][title]"
+                    class="input w-full" value="<%= section.title %>" placeholder="E.g., Project Overview" required />
+                  <% if section.persisted? %>
+                    <input type="hidden" name="proposal_template[template_sections_attributes][<%= index %>][id]"
+                    value="<%= section.id %>" />
+                  <% end %>
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">Section Content</label>
+                  <textarea name="proposal_template[template_sections_attributes][<%= index %>][content]"
+                    class="textarea w-full h-24" placeholder="Describe the section content..." required>
+                    <%= section.content %>
+                  </textarea>
+                </div>
+                <button type="button" class="btn btn-sm btn-error text-white" data-action="click->sections#removeSection">
+                  Remove Section
+                </button>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+        <button type="button" class="btn btn-sm" data-action="click->sections#addSection">
+          <i data-lucide="plus" class="size-4"></i>
+          Add Section
+        </button>
+
+        <div class="flex flex-col sm:flex-row sm:justify-end gap-3 mt-6">
+          <%= f.submit submit_text, class: "btn btn-neutral" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop bg-black/50">
+    <button>close</button>
+  </form>
+</dialog>

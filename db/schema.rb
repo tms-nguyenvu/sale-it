@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_15_074403) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_16_031030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -192,6 +192,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_15_074403) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "template_proposals", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "template_sections", force: :cascade do |t|
+    t.string "title"
+    t.text "content"
+    t.bigint "template_proposal_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["template_proposal_id"], name: "index_template_sections_on_template_proposal_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -230,4 +246,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_15_074403) do
   add_foreign_key "leads", "email_replies"
   add_foreign_key "leads", "users", column: "manager_id"
   add_foreign_key "taggings", "tags"
+  add_foreign_key "template_sections", "template_proposals"
 end

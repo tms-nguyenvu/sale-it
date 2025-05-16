@@ -34,6 +34,10 @@ Rails.application.routes.draw do
     # Sale pipeline
     resources :sales, only: %i[index create update]
     resources :leads, only: %i[index create update]
+
+    # Proposal
+    resources :proposals
+    resources :proposal_templates, only: %i[index new create update destroy]
   end
 
   root "admin/dashboard#index"
