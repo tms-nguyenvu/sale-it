@@ -1,0 +1,84 @@
+<div class="mt-6 space-y-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @proposal_templates.each do |proposal_template| %>
+      <div class="rounded-xl border border-gray-200 bg-white text-gray-900 
+      shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col">
+        <div class="flex flex-col flex-grow p-6 space-y-4">
+          <div class="flex justify-between items-start">
+            <h3 class="text-xl font-semibold leading-snug truncate"><%= proposal_template.name %></h3>
+          </div>
+          <p class="text-sm text-gray-600 line-clamp-3"><%= proposal_template.description %></p>
+
+          <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-700">
+            <span>
+              <strong><%= proposal_template.template_sections.count %></strong>
+              Section<%= "s" if proposal_template.template_sections.count != 1 %>
+            </span>
+          </div>
+        </div>
+
+        <div class="flex gap-3 px-6 py-4 border-t border-gray-100">
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="document.getElementById('preview_modal_<%= proposal_template.id %>').showModal()"
+            aria-label="Preview <%= proposal_template.name %>"
+          >
+            <i data-lucide="eye" class="w-4 h-4"></i>
+            Preview
+          </button>
+          <%= link_to admin_proposal_template_path(proposal_template),
+              data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this template?" },
+              class: "btn btn-error btn-sm" do %>
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            Delete
+          <% end %>
+        </div>
+
+        <dialog id="preview_modal_<%= proposal_template.id %>" class="modal">
+          <div class="modal-box max-w-[700px]">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-gray-900"><%= proposal_template.name %></h2>
+            </div>
+
+            <p class="mb-6 text-gray-700 whitespace-pre-wrap"><%= proposal_template.description %></p>
+
+            <hr class="mb-6 border-gray-200" />
+
+            <div class="space-y-6 max-h-[50vh] overflow-y-auto pr-4 scrollbar-thin 
+            scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              <% proposal_template.template_sections.each do |section| %>
+                <section class="space-y-1">
+                  <h3 class="text-lg font-semibold text-gray-900"><%= section.title %></h3>
+                  <p class="text-gray-700 whitespace-pre-wrap text-sm leading-relaxed"><%= section.content %></p>
+                </section>
+              <% end %>
+            </div>
+
+            <div class="mt-8 flex justify-end gap-4">
+              <button
+                class="btn btn-sm btn-neutral"
+                onclick="document.getElementById('edit_modal_<%= proposal_template.id %>').showModal();
+                        document.getElementById('preview_modal_<%= proposal_template.id %>').close();">
+                <i data-lucide="square-pen" class="size-4"></i>
+                Edit
+              </button>
+            </div>
+          </div>
+
+          <form method="dialog" class="modal-backdrop bg-black/50">
+            <button>close</button>
+          </form>
+        </dialog>
+
+        <%= render partial: "admin/proposal_templates/form_modal", locals: {
+          modal_id: "edit_modal_#{proposal_template.id}",
+          title: "Edit Proposal Template",
+          url: admin_proposal_template_path(proposal_template),
+          method: :patch,
+          submit_text: "Update Template",
+          proposal_template: proposal_template
+        } %>
+      </div>
+    <% end %>
+  </div>
+</div>
