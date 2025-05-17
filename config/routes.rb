@@ -37,6 +37,7 @@ Rails.application.routes.draw do
 
     # Proposal
     resources :proposals
+    resources :proposal_optimizations, only: [:create]
     resources :proposal_templates, only: %i[index new create update destroy]
   end
 

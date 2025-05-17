@@ -5,7 +5,9 @@ import ContactsController from "./contacts_controller"
 import DragController from "./drag_controller"
 import ProjectNameController from "./project_name_controller"
 import SectionsController from "./sections_controller"
+import ProposalOptimizationsController from "./proposal_optimizations_controller"
 
+application.register("optimize", ProposalOptimizationsController)
 application.register("sections", SectionsController)
 application.register("project-name", ProjectNameController)
 application.register("drag", DragController)
