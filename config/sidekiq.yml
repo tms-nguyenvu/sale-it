@@ -9,3 +9,13 @@
       cron: "0 0 1 * *"
       class: "DeletePendingRejectedSourcesJob"
       queue: "default"
+
+    refresh_email_suggestion:
+      cron: "0 4 * * *"
+      class: "RefreshEmailSuggestionJob"
+      queue: "default"
+
+    refresh_sale_suggestion:
+      cron: "*/15 * * * *"
+      class: "RefreshSaleSuggestionJob"
+      queue: "default"

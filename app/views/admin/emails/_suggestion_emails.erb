@@ -3,5 +3,32 @@
     <h3 class="text-2xl font-semibold leading-none tracking-tight">Suggestion from AI</h3>
     <p class="text-sm text-muted-foreground">Based on effective email analytics</p>
   </div>
-  <div class="p-6 pt-0 space-y-4"></div>
+
+  <div class="p-6 pt-0 space-y-4">
+    <% if @effective_email.present? %>
+      <div class="space-y-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
+        <h4 class="font-medium text-blue-800 flex items-center gap-1">
+          <i data-lucide="thumbs-up" class="lucide lucide-thumbs-up h-4 w-4"></i>
+          Subject email
+        </h4>
+        <p class="text-sm text-blue-700 break-words whitespace-pre-wrap">
+          <%= @effective_email["subject"] %>
+        </p>
+
+      </div>
+      <div class="space-y-2 p-3 bg-amber-50 rounded-lg border border-amber-100">
+        <div class="font-medium text-amber-800 flex items-center gap-1">
+          <i data-lucide="square-pen" class="lucide lucide-square-pen h-4 w-4"></i>
+          Body email
+        </div>
+        <p class="text-sm text-amber-700 break-words whitespace-pre-wrap">
+          <%= @effective_email["body"] %>
+        </p>
+
+      </div>
+    <% else %>
+      <p>No effective email data found.</p>
+    <% end %>
+  </div>
 </div>
+

@@ -1,0 +1,121 @@
+<div class="space-y-6">
+  <div class="mt-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Email Analytics</h1>
+        <p class="text-gray-600">AI analyzes emails with high open/click rates to optimize performance</p>
+      </div>
+    </div>
+  </div>
+
+  <%= render partial: "shared/tabs", locals: {
+    tabs: [
+      { label: "Compose emails", path: admin_emails_path },
+      { label: "Email replies", path: admin_email_replies_path },
+      { label: "Effective analysis", path: admin_email_analytics_path }
+    ]
+  } %>
+
+  <div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+      <div class="flex flex-col space-y-1.5 p-6">
+        <h3 class="text-2xl font-semibold leading-none tracking-tight">Email Performance Analysis</h3>
+        <p class="text-sm text-gray-600">AI analyzes emails with high open/click rates to optimize performance</p>
+      </div>
+
+      <div class="p-6 pt-0 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+            <div class="flex flex-col space-y-1.5 p-6 pb-2">
+              <h3 class="tracking-tight text-sm font-medium text-gray-500">Click Rate This Month</h3>
+            </div>
+            <div class="p-6 pt-0">
+              <div class="text-2xl font-semibold text-gray-900"><%= @click_rate %>%</div>
+              <div class="mt-1 text-xs text-gray-500">Total clicks recorded</div>
+            </div>
+          </div>
+
+          <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+            <div class="flex flex-col space-y-1.5 p-6 pb-2">
+              <h3 class="tracking-tight text-sm font-medium text-gray-500">Reply Rate This Month</h3>
+            </div>
+            <div class="p-6 pt-0">
+              <div class="text-2xl font-semibold text-gray-900"><%= @reply_rate %>%</div>
+              <div class="mt-1 text-xs text-gray-500">Total replies recorded</div>
+            </div>
+          </div>
+
+          <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+            <div class="flex flex-col space-y-1.5 p-6 pb-2">
+              <h3 class="tracking-tight text-sm font-medium text-gray-500">Total Emails Sent</h3>
+            </div>
+            <div class="p-6 pt-0">
+              <div class="text-2xl font-semibold text-gray-900"><%= @emails_sent_count %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <h3 class="font-medium">Most Effective Email</h3>
+          <div class="space-y-2">
+            <div class="p-4 border rounded-lg">
+              <div class="flex items-center gap-4">
+                <i data-lucide="circle-check-big" class="lucide lucide-circle-check-big h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+
+                <div>
+                  <h4 class="font-medium">Subject</h4>
+                  <p class="text-sm text-gray-500 mt-1">
+                    <%= @most_opened_email&.subject.presence || "No subject available." %>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 border rounded-lg">
+              <div class="flex items-center gap-4">
+                <i data-lucide="circle-check-big" class="lucide lucide-circle-check-big h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+
+                <div>
+                  <h4 class="font-medium">Body</h4>
+                  <p class="text-sm text-gray-500 mt-1">
+                    <%= @most_opened_email&.body.presence || "No content available." %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="font-medium">Most Replied Email</h3>
+          <div class="space-y-2">
+            <div class="p-4 border rounded-lg">
+              <div class="flex items-center gap-4">
+                <i data-lucide="circle-check-big" class="lucide lucide-circle-check-big h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+
+                <div>
+                  <h4 class="font-medium">Subject</h4>
+                  <p class="text-sm text-gray-500 mt-1">
+                    <%= @most_replied_email&.subject.presence || "No subject available." %>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 border rounded-lg">
+              <div class="flex items-center gap-4">
+                <i data-lucide="circle-check-big" class="lucide lucide-circle-check-big h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"></i>
+
+                <div>
+                  <h4 class="font-medium">Body</h4>
+                  <p class="text-sm text-gray-500 mt-1">
+                    <%= @most_replied_email&.body.presence || "No content available." %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

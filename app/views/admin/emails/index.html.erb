@@ -1,10 +1,8 @@
 <div class="space-y-6">
-
-
   <div class="space-y-6 mt-4">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight">Email Outreach</h1>
+        <h1 class="text-2xl font-bold tracking-tight">Email Compose</h1>
         <p class="text-gray-600">Write personalized emails and messages with AI</p>
       </div>
     </div>
@@ -14,8 +12,8 @@
       <%= render partial: "shared/tabs", locals: {
         tabs: [
           { label: "Compose emails", path: admin_emails_path },
-          { label: "Email campaigns", path: admin_emails_path },
-          { label: "Effective analysis", path: admin_emails_path }
+          { label: "Email replies", path: admin_email_replies_path },
+          { label: "Effective analysis", path: admin_email_analytics_path }
         ]
       } %>
 

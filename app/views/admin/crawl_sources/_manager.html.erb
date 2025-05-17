@@ -67,7 +67,6 @@
         <th>Source Type</th>
         <th>Description</th>
         <th>Status</th>
-        <th>Approve</th>
         <th>Data Collected</th>
         <th></th>
       </tr>
@@ -94,14 +93,6 @@
               <%= source.status.humanize %>
             </span>
           </td>
-          <td>
-            <span class="badge rounded-full <%= source.approval_status == 'approved' ? 'badge-success' :
-                                                source.approval_status == 'pending' ? 'badge-warning' :
-                                                        (source.approval_status == 'rejected' ? 'badge-error' : '') %>">
-              <%= source.approval_status.humanize %>
-            </span>
-          </td>
-
           <td>
             <%= source.companies.count %> companies
           </td>

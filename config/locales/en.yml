@@ -51,33 +51,56 @@ en:
 
         Companies: %{companies}
 
-        For each company, collect and return the following combined information in one object per company.
+        For each company, collect and return all the information in a **single object**.
+
+        ---
 
         ### Fields to include per company:
 
         #### 1. Company Details
-        - **company**: Name of the company.
-        - **industry**: The sector or industry in which the company operates.
-        - **website**: Official website URL.
-        - **funding_round**: Most recent known funding round (e.g., Seed, Series A, Series C, Acquired, etc.).
-        - **employee_count**: Approximate number of employees.
-        - **hiring_roles_count**: Number of open job roles listed on their official site or careers page.
+        - **company**:
+          - **name**: Company name.
+          - **industry**: Industry or sector.
+          - **website**: Official website URL.
+          - **funding_round**: Latest known funding round (e.g., Seed, Series A, Acquired, etc.).
+          - **employee_count**: Approximate number of employees.
 
-        #### 2. Contact
+        #### 2. Jobs Information
+        - **jobs**:
+          - **count**: Total number of open roles.
+          - **careers_page_url**: URL to the careers/jobs page.
+          - **listings**: List of open roles. Each role includes:
+            - **title**
+            - **location** (e.g., Remote, New York, Hybrid)
+            - **level** (e.g., Junior, Senior, Intern)
+            - **employment_type** (Full-time, Part-time, Contract, etc.)
+            - **tech_stack**: List of relevant technologies or tools. Use ["Not specified"] if unknown.
+            - **posted_date**: Use "YYYY-MM-DD" format or "Not specified".
+            - **application_url**
+
+        #### 3. Contact
         - **contact**:
-          - **email**: A direct or general email address (e.g., contact, info, or support).
-          - **phone_number**: Company’s contact number.
-          - **name**: Full name of the CEO, CTO, or other company leader.
-          - **position**: Their role in the company (e.g., CEO, CTO, Co-founder, etc.).
-          - **is_decision_maker**: Set to `true` if the person holds a decision-making role (e.g., CEO, CTO, President, Managing Director, Founder); otherwise, `false`.
+          - **email**
+          - **phone_number**
+          - **name**: Name of a senior leader (e.g., CEO, CTO).
+          - **position**
+          - **is_decision_maker**: `true` if they hold a decision-making position.
 
-        #### 3. Score Lead
+        #### 4. Score Lead
         - **score_lead**:
-          - **potential_score**: A subjective score out of 100 evaluating this company’s potential as a lead. Base it on factors such as funding stage, market growth, hiring activity, partnerships, product traction, or recent press.
-          - **note**: A concise summary justifying the score. Highlight significant insights such as recent funding, expansion news, partnerships, or unique product offerings.
+          - **potential_score**: From 0 to 100.
+          - **note**: Justify the score based on:
+            - Hiring activity
+            - Tech stack alignment
+            - Recent funding or growth
+            - Company stage (startup, enterprise, etc.)
+            - Product-market fit
+            - Fit with your business goals
+
+        ---
 
         ### Output Format (JSON)
-        Return a single list of companies, where each company includes all information in one object. For example:
+        Return a JSON object with a `companies` array:
 
         ```json
         {
@@ -88,8 +111,22 @@ en:
                 "industry": "Fintech",
                 "website": "https://example.com",
                 "funding_round": "Series B",
-                "employee_count": "200",
-                "hiring_roles_count": "12"
+                "employee_count": "200"
+              },
+              "jobs": {
+                "count": 5,
+                "careers_page_url": "https://example.com/careers",
+                "listings": [
+                  {
+                    "title": "Senior Backend Engineer",
+                    "location": "Remote",
+                    "level": "Senior",
+                    "employment_type": "Full-time",
+                    "tech_stack": ["Node.js", "AWS", "Docker"],
+                    "posted_date": "2025-04-15",
+                    "application_url": "https://example.com/careers/senior-backend-engineer"
+                  }
+                ]
               },
               "contact": {
                 "email": "info@example.com",
@@ -100,10 +137,13 @@ en:
               },
               "score_lead": {
                 "potential_score": 85,
-                "note": "Recently raised Series B funding, expanding to new markets, and actively hiring across multiple teams."
+                "note": "Raised Series B recently, hiring across engineering, and tech stack aligns well."
               }
             }
           ]
+        }
+        ```
+
 
     email_outreach:
       generate_email_prompt: |
@@ -132,8 +172,111 @@ en:
         - Output must be valid JSON.
         - Do not include explanations or additional formatting.
 
+    email_suggestions:
+      generate_email_prompt: |
+        Task: Optimize the given email for higher engagement based on proven best practices.
+
+        Inputs:
+        - Subject: %{subject}
+        - Body: %{body}
+
+        Goals:
+        - Improve the subject line to maximize open rates.
+        - Refine the body to increase click-throughs and replies.
+        - Suggest a clearer call to action (CTA) if needed.
+        - Ensure the content matches professional outreach standards.
+        - Keep the tone persuasive but not aggressive.
+        - Keep it concise and under 120 words.
+
+        Output format (JSON):
+        {
+          "subject": "[Optimized subject line]",
+          "body": "[Optimized body text]"
+        }
+
+        Notes:
+        - Output must be valid JSON.
+        - Do not include explanations or additional formatting.
 
 
+      generate_suggestions_prompt: |
+        Task:
+          Based on the input customer data in a sales pipeline, 
+          analyze the interaction history and current stage, 
+          then suggest the next best action the salesperson should take to maximize the chance of closing the deal.
+          Also, predict the win probability of the deal based on customer behavior.
+
+        Inputs:
+          - Current Stage: %{status}  # The current stage of the lead (e.g., new_lead, sent, replied, demo, negotiate, closed)
+          - Last Contact Date: %{last_contact_date}  # The date the salesperson last contacted the lead
+          - Interaction Count: %{interaction_count}  # Total number of interactions with the lead
+          - Last Customer Response: %{last_customer_response}  # The last response from the customer (e.g., Interested, Needs more info)
+          - Priority: %{priority}  # The lead's priority (low, medium, high)
+          - Last Interaction Type: %{last_interaction}  # The type of last interaction (e.g., email, call, meeting, proposal)
+
+        Output format (JSON):
+          {
+            "suggested_action": "string (next best action, e.g., follow-up, call, send proposal)",
+            "reasoning": "string (brief explanation)",
+            "win_probability": "number (0-100, estimated chance of winning the deal based on the interaction history and stage)"
+          }
+
+        Notes:
+          - Use the given variables to infer the best course of action.
+          - Tailor the suggestion to the customer’s current stage and past interaction.
+          - Consider the lead's priority, interaction frequency, and last response when making the suggestion.
+          - Output must be valid JSON.
+          - Keep explanation brief and helpful.
+
+      generate_suggestions_action_prompt: |
+        Task: 
+        You are an AI assistant helping with outreach email campaigns. Based on the email content and the reply received,
+        suggest the most appropriate next action for the campaign manager to take.
+
+        Input:
+        %{ai_input}
+
+        Requirements:
+        - Suggest a specific next action (e.g. send follow-up email, adjust timing, change CTA, stop emailing, etc.)
+        - Justify the action based on the reply and the original email
+        - Keep the suggestion concise and actionable
+
+        Output format (JSON):
+        {
+          "suggested_action": "string",
+          "reasoning": "string"
+        }
+
+    proposal:
+      proposal_optimization_prompt: |
+        Task: Generate a professional proposal based on the provided data.
+
+        Inputs:
+        - Proposal data: %{proposal}
+
+        Goals:
+        - Use the provided sections to generate a complete proposal.
+        - Fill in missing content logically and relevantly.
+        - Write in a professional yet friendly tone.
+        - Keep the proposal clear, persuasive, and structured.
+        - Use proper English grammar and formatting.
+        - Include all sections listed under "sections".
+
+        Output format (JSON):
+        {
+          "title": "[Generated Proposal Title]",
+          "content": [
+            {
+              "title": "Section Title",
+              "content": "Generated content for this section."
+            },
+            ...
+          ]
+        }
+
+        Notes:
+        - Output must be valid JSON.
+        - Do not include any extra explanations or markdown formatting.
   email_content:
     subject:
       friendly: "Hey %{name}, a quick note from TOMOSIA here."
@@ -148,26 +291,26 @@ en:
       professional: "Hello %{name},"
       default: "Hello %{name},"
     intro:
-      friendly: "Hope you're doing great! Just wanted to share something that might be helpful for %{company}."
-      casual: "Yo! Quick note about something cool we're working on — might be useful for %{company}."
-      formal: "I am writing to formally introduce our services and how they may align with the goals of %{company}."
-      professional: "I wanted to reach out regarding our solutions that can streamline operations at %{company}."
-      default: "I wanted to reach out regarding campaigns. We believe our solutions can benefit %{company}."
+      friendly: "Hope you're doing great! We noticed %{company} is hiring for roles like: %{job_details}. Our solutions can support your team’s needs!"
+      casual: "Yo! Looks like %{company} is hiring for %{job_details}. We've got something cool to help with that!"
+      formal: "I am writing to introduce our services, which align with %{company}'s current hiring needs: %{job_details}."
+      professional: "I’m reaching out regarding our solutions that can support %{company}’s hiring efforts for roles like: %{job_details}."
+      default: "I’m reaching out to share how our solutions can benefit %{company}, especially with your hiring needs: %{job_details}."
     value_proposition:
-      friendly: "We've built a tool that makes things easier for teams like yours — saving time, boosting results, and eliminating those annoying manual tasks that slow everyone down."
-      casual: "Basically, it's a no-hassle way to get stuff done faster without breaking a sweat. Our clients in %{industry} are seeing some pretty sweet results."
-      formal: "Our solutions are specifically designed to support organizations within the %{industry} industry in achieving operational excellence and cost efficiency. Our proprietary methodology has demonstrated substantial ROI for enterprises similar to %{company}."
-      professional: "Our product helps companies like yours in the %{industry} industry to improve efficiency by 30% and reduce costs by up to 25%. We've worked with similar companies and understand the unique challenges you face."
-      default: "Our product helps companies like yours in the %{industry} industry to improve efficiency and reduce costs."
+      friendly: "We’ve built tools that make life easier for teams hiring for %{job_details}. Save time, boost results, and skip those annoying manual tasks!"
+      casual: "Our tools help teams hiring for %{job_details} get stuff done faster without breaking a sweat. Our clients in %{industry} love it!"
+      formal: "Our solutions are designed to support %{industry} organizations hiring for %{job_details}, ensuring operational excellence and cost efficiency."
+      professional: "Our product helps %{industry} companies like %{company} hiring for %{job_details} improve efficiency by 30% and reduce costs by up to 25%."
+      default: "Our product supports %{industry} companies like %{company} hiring for %{job_details} to improve efficiency and reduce costs."
     cta:
-      friendly: "Want to hop on a quick call this week to chat about how this could work for your team? I'm free most afternoons."
-      casual: "Wanna catch up sometime soon? I can show you how this works in about 15 minutes."
-      formal: "Please advise a convenient time for a brief discussion at your earliest availability. I would be pleased to provide a comprehensive overview of our solutions and their potential application to %{company}'s objectives."
-      professional: "Let me know a suitable time to discuss further. I'd be happy to schedule a brief demo showing how our solutions can address your specific needs."
-      default: "Let me know a suitable time to discuss further."
+      friendly: "Let’s jump on a quick call this week to discuss how we can help your team. I’m available most afternoons! <a href=\"%{url}\">Click here to book a time</a>."
+      casual: "How about a quick 15-minute call to show you how this works? Let me know what time works for you! <a href=\"%{url}\">Schedule a call here</a>."
+      formal: "Please let me know a convenient time for a brief discussion. I would be happy to walk you through how our solutions can support %{company}. <a href=\"%{url}\">Book a time here</a>."
+      professional: "I'd love to set up a time for a demo to show you how we can tailor our solutions to meet your needs. Let me know when you're free! <a href=\"%{url}\">Click here to schedule a demo</a>."
+      default: "Let me know a suitable time to discuss how our solutions can benefit your business. <a href=\"%{url}\">Click here to arrange a meeting</a>."
     signature:
-      friendly: "Cheers,\n(Your Name)"
-      casual: "Thanks!\n(Your Name)"
-      formal: "Sincerely,\n(Your Name)"
-      professional: "Best regards,\n(Your Name)"
-      default: "Regards,\n(Your Name)"
+      friendly: "Cheers,\nTOMOSIA Team"
+      casual: "Thanks!\nTOMOSIA Team"
+      formal: "Sincerely,\nTOMOSIA Team"
+      professional: "Best regards,\nTOMOSIA Team"
+      default: "Regards,\nTOMOSIA Team"

@@ -1,8 +1,8 @@
 <div class="space-y-6">
   <div class="flex justify-between items-center">
     <div>
-      <h1 class="text-2xl font-bold tracking-tight">Pending Crawl Sources</h1>
-      <p class="text-gray-600">Approve or reject new data sources</p>
+      <h1 class="text-2xl font-bold tracking-tight">List Job Crawl</h1>
+      <p class="text-gray-600">Review all data jobs collected from the crawling process</p>
     </div>
   </div>
 
@@ -10,10 +10,10 @@
     <%= render partial: "shared/tabs", locals: {
       tabs: [
         { label: "Data Sources", path: admin_crawl_sources_path },
-        { label: "Pending Approval", path: admin_pending_crawl_sources_path },
+        { label: "List Jobs", path: admin_list_sources_path },
         { label: "Crawl History", path: admin_history_crawl_sources_path }
       ]
     } %>
-    <%= render 'pending', crawl_sources: @crawl_sources  %>
+    <%= render 'list_sources', crawl_sources: @crawl_sources  %>
   </div>
 </div>

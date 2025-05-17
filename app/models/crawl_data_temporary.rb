@@ -5,5 +5,6 @@ class CrawlDataTemporary < ApplicationRecord
 
   scope :pending_data, -> { where(data_status: :pending) }
   scope :approved_data, -> { where(data_status: :approved) }
+  scope :rejected_data, -> { where(data_status: :rejected) }
   scope :last_crawl_data, -> { order(created_at: :desc).first }
 end
