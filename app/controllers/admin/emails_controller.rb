@@ -3,7 +3,7 @@ class Admin::EmailsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @leads = Lead.where(status: "new_lead")
+    @leads = Lead.all
     @contacts = Contact.where(id: @leads.pluck(:contact_id))
     @emails = EmailService::EmailContentService.new(@contacts, nil, current_user).generate_content(params[:tone] || "professional")
     @history_emails = Email.all

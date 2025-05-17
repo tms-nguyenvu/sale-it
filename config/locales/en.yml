@@ -247,7 +247,36 @@ en:
           "reasoning": "string"
         }
 
+    proposal:
+      proposal_optimization_prompt: |
+        Task: Generate a professional proposal based on the provided data.
 
+        Inputs:
+        - Proposal data: %{proposal}
+
+        Goals:
+        - Use the provided sections to generate a complete proposal.
+        - Fill in missing content logically and relevantly.
+        - Write in a professional yet friendly tone.
+        - Keep the proposal clear, persuasive, and structured.
+        - Use proper English grammar and formatting.
+        - Include all sections listed under "sections".
+
+        Output format (JSON):
+        {
+          "title": "[Generated Proposal Title]",
+          "content": [
+            {
+              "title": "Section Title",
+              "content": "Generated content for this section."
+            },
+            ...
+          ]
+        }
+
+        Notes:
+        - Output must be valid JSON.
+        - Do not include any extra explanations or markdown formatting.
   email_content:
     subject:
       friendly: "Hey %{name}, a quick note from TOMOSIA here."

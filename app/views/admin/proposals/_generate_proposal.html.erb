@@ -1,0 +1,140 @@
+<div class="lg:col-span-2">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-2xl font-semibold leading-none tracking-tight">Create proposals automatically</h3>
+      <p class="text-sm text-gray-600">Based on customer requirements, AI fills in available proposal form</p>
+    </div>
+
+    <div class="p-6 pt-0 space-y-4">
+      <%= form_with url: admin_proposals_path, method: :post, scope: :proposal, class: "pt-0 space-y-4", html: { id: "proposal-form" } do |f| %>
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Customer</legend>
+            <% if @companies.present? %>
+              <select name="proposal[company_name]" class="select w-full">
+                <% @companies.each do |company| %>
+                  <option value="<%= company.name %>">
+                    <%= company.name %> (<%= company.industry %>)
+                  </option>
+                <% end %>
+              </select>
+            <% else %>
+              <select class="select w-full" disabled>
+                <option>No companies found</option>
+              </select>
+            <% end %>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Title proposal</legend>
+            <%= f.text_field :title, class: "input w-full", placeholder: "Enter title proposal", required: true %>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Template proposal</legend>
+            <% if @template_proposals.present? %>
+              <select name="proposal[template_sections][]" class="select w-full">
+                <% @template_proposals.each do |template| %>
+                  <option value="<%= template.template_sections.map { |section| { title: section.title, content: section.content } }.to_json %>">
+                    <%= template.name %>
+                  </option>
+                <% end %>
+              </select>
+            <% else %>
+              <select class="select w-full" disabled>
+                <option>No template found</option>
+              </select>
+            <% end %>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Customer requirements</legend>
+            <%= f.text_area :requirements, class: "textarea w-full h-24", placeholder: "Enter customer requirements", required: true, id: "proposal_requirements" %>
+          </fieldset>
+        </div>
+
+        <div>
+          <div class="flex items-center">
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend text-sm font-medium">Sections in the proposal</legend>
+            </fieldset>
+          </div>
+
+          <div class="space-y-2 border rounded-lg p-3">
+            <% sections = [
+              "Company introduction",
+              "Understand the customer's problem",
+              "Proposed solution",
+              "Main features",
+              "Similar case studies",
+              "Quote & Timeline",
+              "Implementation team",
+              "Workflow",
+              "Terms & Conditions"
+            ] %>
+            <% sections.each do |section| %>
+              <div class="flex items-center space-x-2">
+                <%= check_box_tag "proposal[sections][]", section, true, class: "checkbox checkbox-neutral" %>
+                <label class="text-sm"><%= section %></label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="items-center flex justify-between">
+          <div class="flex gap-2">
+
+
+            <button
+              data-controller="optimize"
+              data-action="click->optimize#submit"
+              data-optimize-url-value="<%= admin_proposal_optimizations_path %>"
+              data-optimize-target="button"
+              type="button"
+              class="btn btn-sm btn-neutral"
+            >
+              <i data-lucide="sparkles" class="lucide lucide-sparkles size-4"></i> Optimal AI
+            </button>
+
+          </div>
+          <div class="flex gap-2">
+            <button type="button" class="btn btn-sm">
+              <i data-lucide="file-type-2" class="size-4"></i> Export PDF
+            </button>
+            <button type="submit" class="btn btn-sm btn-neutral">Create proposal</button>
+          </div>
+        </div>
+        <%= hidden_field_tag 'proposal[customized_proposal]', '', id: 'customized_proposal_field' %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<input type="checkbox" id="proposal-preview-modal" class="modal-toggle" />
+<div class="modal" id="proposal-modal-container" role="dialog">
+  <div class="modal-box max-w-4xl w-full max-h-[85vh] overflow-y-auto p-8 bg-white rounded-xl shadow-2xl">
+    <h3 class="font-extrabold text-2xl mb-6 text-center text-primary">Proposal Preview</h3>
+    <div id="proposal-preview-content" class="space-y-6 prose prose-sm max-w-none">
+      <p class="text-gray-500 italic">Loading proposal...</p>
+    </div>
+    <div id="proposal-edit-form" class="space-y-6 mt-6 hidden">
+    </div>
+    <div class="modal-action mt-8 flex flex-col gap-4 items-center">
+      <div id="proposal-modal-buttons" class="flex gap-3">
+        <button type="button" id="edit-proposal-btn" class="btn btn-outline btn-primary px-6">Edit Proposal</button>
+        <button type="button" id="clear-proposal-btn" class="btn btn-outline btn-error px-6">Clear</button>
+        <label for="proposal-preview-modal" class="btn btn-neutral px-6">Close</label>
+      </div>
+      <div id="proposal-edit-buttons" class="flex gap-3 hidden">
+        <button type="button" id="save-proposal-btn" class="btn btn-primary px-6">Save Changes</button>
+        <button type="button" id="cancel-edit-btn" class="btn btn-outline px-6">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
