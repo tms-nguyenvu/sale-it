@@ -43,5 +43,5 @@ class Lead < ApplicationRecord
   belongs_to :manager, class_name: "User", optional: true
   has_many :email_replies, dependent: :destroy
   has_many :emails, dependent: :nullify
-  has_many :proposals, dependent: :nullify
+  has_many :proposals, dependent: :destroy
 end
