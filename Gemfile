@@ -90,5 +90,5 @@ gem "ransack"
 
 gem "acts-as-taggable-on"
 
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
+gem "wicked_pdf"
+gem "wkhtmltopdf-binary"
