@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_16_031030) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_19_034507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -151,6 +151,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_031030) do
     t.index ["manager_id"], name: "index_leads_on_manager_id"
   end
 
+  create_table "proposals", force: :cascade do |t|
+    t.text "requirement"
+    t.string "title"
+    t.bigint "template_proposal_id", null: false
+    t.string "pdf_ur"
+    t.bigint "lead_id", null: false
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "customized_proposal"
+    t.index ["lead_id"], name: "index_proposals_on_lead_id"
+    t.index ["template_proposal_id"], name: "index_proposals_on_template_proposal_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -245,6 +259,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_031030) do
   add_foreign_key "leads", "contacts"
   add_foreign_key "leads", "email_replies"
   add_foreign_key "leads", "users", column: "manager_id"
+  add_foreign_key "proposals", "leads"
+  add_foreign_key "proposals", "template_proposals"
   add_foreign_key "taggings", "tags"
   add_foreign_key "template_sections", "template_proposals"
 end

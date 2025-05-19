@@ -12,7 +12,6 @@ class Admin::ProposalOptimizationsController < ApplicationController
     }
 
     optimized_proposal = ProposalService::ProposalOptimizeService.new(proposal).optimize_proposal
-
     if optimized_proposal
       @optimized_proposal = optimized_proposal
       render json: {
