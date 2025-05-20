@@ -14,7 +14,7 @@ class Admin::CrawlDataTemporariesController < ApplicationController
     else
       flash[:alert] = "Failed to #{params[:action_type]} data."
     end
-    redirect_back fallback_location: admin_list_sources_path
+    # redirect_back fallback_location: admin_list_sources_path
   end
 
   private

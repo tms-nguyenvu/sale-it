@@ -14,7 +14,7 @@ class Admin::EmailsController < ApplicationController
         @subject = @most_clicked_email.subject
         @body = @most_clicked_email.body
 
-        if @most_clicked_email.email_suggestion.present?
+        if @most_clicked_email.email_suggestion.data.present?
           @effective_email = @most_clicked_email.email_suggestion.data
         else
           GenerateEmailSuggestionJob.perform_later(@most_clicked_email.id)
