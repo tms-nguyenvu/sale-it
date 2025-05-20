@@ -5,8 +5,30 @@ class Admin::ProposalsController < ApplicationController
   def index
     @leads = Lead.all
     @companies = Company.where(id: @leads.pluck(:company_id))
+    @company = nil
     @template_proposals = TemplateProposal.all
     @proposals = Proposal.all
+  end
+
+  def new
+    @leads = Lead.all
+    @companies = Company.where(id: @leads.pluck(:company_id))
+    @template_proposals = TemplateProposal.all
+    @proposals = Proposal.all
+
+    if params[:lead_id].present?
+      @lead = Lead.find_by(id: params[:lead_id])
+      if @lead
+        @company = Company.find_by(id: @lead.company_id)
+      else
+        flash[:error] = "Lead not found"
+        redirect_to admin_proposals_path and return
+      end
+    else
+      @company = nil
+    end
+
+    render :index
   end
 
   def create
@@ -17,7 +39,7 @@ class Admin::ProposalsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:error] = "Could not find lead for this company"
-          render :index
+          render :index, status: :unprocessable_entity
         end
         format.json { render json: { success: false, error: "Could not find lead for this company" }, status: :not_found }
       end
@@ -42,7 +64,7 @@ class Admin::ProposalsController < ApplicationController
       else
         format.html do
           flash[:error] = @proposal.errors.full_messages.join(", ")
-          render :index
+          render :index, status: :unprocessable_entity
         end
         format.json { render json: { success: false, errors: @proposal.errors.full_messages }, status: :unprocessable_entity }
       end

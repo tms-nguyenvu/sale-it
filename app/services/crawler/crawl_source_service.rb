@@ -1,9 +1,10 @@
 module Crawler
   class CrawlSourceService
-    def initialize(source_url, source_type, scheduled = false)
+    def initialize(source_url, source_type, scheduled = false, description = nil)
       @source_url = source_url
       @source_type = source_type
       @scheduled = scheduled
+      @description = description
     end
 
     def process
@@ -90,7 +91,8 @@ module Crawler
       crawl_source = CrawlSource.create!(
         source_url: @source_url,
         source_type: @source_type,
-        scheduled: @scheduled
+        scheduled: @scheduled,
+        description: @description
       )
 
       companies.each do |company_group|

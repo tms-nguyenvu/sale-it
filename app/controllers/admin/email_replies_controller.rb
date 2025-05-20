@@ -10,8 +10,7 @@ class Admin::EmailRepliesController < ApplicationController
 
   def create
     email = Email.find_by(id: params[:email_id])
-    lead = Lead.find_by(contact_id: email.contact_id)
-
+    lead = Lead.find_by(id: email.lead_id)
     unless email
       redirect_to admin_email_replies_path, alert: "Email not found." and return
     end
@@ -22,7 +21,6 @@ class Admin::EmailRepliesController < ApplicationController
       user_id: current_user.id,
       body: params[:body],
       received_at: Time.current,
-      lead_id: lead.id
     )
     if lead
       lead.update(status: "replied")

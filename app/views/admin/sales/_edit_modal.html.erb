@@ -124,12 +124,12 @@
           </fieldset>
 
         <div class="flex justify-end gap-3 pt-6">
-          <button type="button" class="btn btn-outline" onclick="document.getElementById('modal_<%= lead.id %>').close()">
-            Cancel
-          </button>
-          <%= f.submit "Save Changes", class: "btn btn-neutral" %>
+          <%= f.submit "Save Changes", class: "btn btn-neutral " %>
         </div>
       <% end %>
     </div>
   </div>
+  <button class="modal-backdrop" onclick="document.getElementById('modal_<%= lead.id %>').close()">
+    Cancel
+  </button>
 </dialog>

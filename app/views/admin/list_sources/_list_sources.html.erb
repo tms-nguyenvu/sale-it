@@ -1,159 +1,178 @@
-<div class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
-focus-visible:ring-offset-2 space-y-4">
-  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-2xl font-semibold leading-none tracking-tight">Crawled Jobs Data</h3>
-      <p class="text-sm text-gray-600">Browse the list of completed crawl jobs and manage the collected information</p>
-    </div>
+<div class="mt-4 container mx-auto space-y-6">
+  <div class="card border">
+    <div class="card-body">
+      <div class="flex flex-col space-y-2 md:flex-row md:justify-between md:items-center">
+        <div>
+          <h3 class="text-2xl font-bold text-base-content">Crawled Jobs Data</h3>
+          <p class="text-sm text-base-content/70">Browse and manage the list of completed crawl jobs</p>
+        </div>
+        <%= link_to admin_potential_companies_path, data: { turbo: false }, class: "btn btn-neutral btn-sm mt-2 md:mt-0" do %>
+          <i data-lucide="building" class="h-4 w-4 mr-2"></i> View Companies
+        <% end %>
+      </div>
 
-    <div class="p-6 pt-0">
-      <div id="pending_sources_container" class="flex flex-col gap-4">
-        <% if @crawl_sources.any? %>
-          <% @crawl_sources.each do |source| %>
-            <%= turbo_frame_tag "list_sources_turbo_frame_#{source.id}" do %>
-              <% unless source.approved? %>
-                <div class="rounded-md border p-4">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                      <div class="p-2 bg-amber-50 rounded-full">
-                        <i data-lucide="clock" class="lucide lucide-clock h-5 w-5 text-amber-500"></i>
-                      </div>
-                      <div>
-                        <h3 class="font-medium"><%= source.source_url %></h3>
-                        <div class="text-sm text-gray-600 flex items-center gap-4 flex-wrap">
-                          <span>
-                            <strong class="text-gray-800">Crawl source:</strong> <%= source.source_type %>
-                          </span>
-                          <span>
-                            <strong class="text-gray-800">Scheduled:</strong>
-                            <span class="badge <%= source.scheduled ? 'badge-success' : 'badge-error' %> text-xs">
-                              <%= source.scheduled ? 'Yes' : 'No' %>
-                            </span>
+      <div class="divider"></div>
+
+      <div id="pending_sources_container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% if @crawl_data_temporaries.any? %>
+          <% @crawl_data_temporaries.each do |data_temp| %>
+            <div class="card bg-base-100 border border-base-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+              <div class="card-body p-5">
+                <div class="space-y-3">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 bg-amber-100 rounded-full">
+                      <i data-lucide="clock" class="h-5 w-5 text-amber-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-semibold text-base-content truncate" title="<%= data_temp.crawl_source.source_url %>">
+                        <%= data_temp.crawl_source.source_url %>
+                      </h3>
+                      <div class="text-sm text-base-content/70 space-y-1">
+                        <div><strong class="text-base-content">Source:</strong> <%= data_temp.crawl_source.source_type %></div>
+                        <div>
+                          <strong class="text-base-content">Scheduled:</strong>
+                          <span class="badge <%= data_temp.crawl_source.scheduled ? 'badge-success' : 'badge-error' %> badge-sm">
+                            <%= data_temp.crawl_source.scheduled ? 'Yes' : 'No' %>
                           </span>
                         </div>
                       </div>
                     </div>
-                      <button class="btn bg-black text-white border-black"
-                              onclick="document.getElementById('my_modal_<%= source.id %>').showModal()">
-                        <i data-lucide="list-collapse" class="size-5"></i>
-                        Detail
-                      </button>
                   </div>
-                </div>
-              <% end %>
-
-              <dialog id="my_modal_<%= source.id %>" class="modal !mt-0">
-                <form method="dialog" class="modal-backdrop">
-                  <button>close</button>
-                </form>
-                <div class="modal-box relative max-w-lg sm:max-w-[700px] h-[90%] bg-white">
-                  <div class="space-y-6">
-                    <div class="text-center sm:text-left">
-                      <h2 class="text-xl font-bold">Approval data</h2>
-                      <p class="text-sm text-gray-500 truncate">From <%= source.source_url %></p>
+                  <% if data_temp.data.present? %>
+                    <% data = data_temp.data %>
+                    <div class="text-sm text-base-content/80 space-y-2">
+                      <% if data["company"].present? %>
+                        <div><strong>Company:</strong> <%= data["company"]["name"] %></div>
+                        <div><strong>Industry:</strong> <%= data["company"]["industry"] %></div>
+                      <% end %>
+                      <% if data["score_lead"].present? %>
+                        <div>
+                          <strong>Score:</strong>
+                          <span class="badge <%= data["score_lead"]["potential_score"] >= 80 ? 'badge-success' : (data["score_lead"]["potential_score"] >= 50 ? 'badge-warning' : 'badge-error') %> badge-sm">
+                            <%= data["score_lead"]["potential_score"] %>/100
+                          </span>
+                        </div>
+                      <% end %>
                     </div>
+                  <% end %>
+                </div>
+                <div class="card-actions justify-between items-center mt-4 pt-4 border-t">
+                  <%= form_with url: admin_crawl_data_temporary_path(data_temp), method: :patch, html: { data: { turbo: false } }, class: "flex items-center gap-2" do |f| %>
+                    <%= f.check_box :action_type,
+                                { class: "checkbox",
+                                  checked: data_temp.data_status == "approved",
+                                  onchange: "this.form.submit()" },
+                                "approved", "rejected" %>
+                    <label class="text-sm text-base-content/70 cursor-pointer">Approve</label>
+                  <% end %>
+                  <% if data_temp.data.present? %>
+                    <label for="modal-<%= data_temp.id %>" class="btn btn-neutral btn-sm">
+                      <i data-lucide="list-collapse" class="lucide lucide-list-collapse size-5"></i>
+                      Details
+                    </label>
+                  <% else %>
+                    <p class="text-base-content/60 italic">No data available for this entry</p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
 
-                    <% source.crawl_data_temporaries.each do |data_temp| %>
-                      <% if data_temp.data.present? %>
-                        <% data = data_temp.data %>
-                        <div class="border rounded-lg p-4 bg-gray-50 space-y-4">
-                          <div class="flex justify-between items-center">
-                            <h3 class="text-md font-semibold">Company Information</h3>
-                              <%= form_with url: admin_crawl_data_temporary_path(data_temp),
-                                            method: :patch,
-                                            html: { data: { turbo: false } },
-                                            class: "flex items-center" do |f| %>
-                                <%= f.check_box :action_type,
-                                                {
-                                                  class: "checkbox",
-                                                  checked: data_temp.data_status == "approved",
-                                                  onchange: "this.form.submit()"
-                                                },
-                                                "approved",
-                                                "rejected" %>
-                              <% end %>
+            <% if data_temp.data.present? %>
+              <% data = data_temp.data %>
+              <input type="checkbox" id="modal-<%= data_temp.id %>" class="modal-toggle" />
+              <div class="modal" role="dialog">
+                <label class="modal-backdrop" for="modal-<%= data_temp.id %>">Close</label>
+                <div class="modal-box max-w-3xl">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-lg">Crawl Data Details</h3>
+                  </div>
+                  <div class="space-y-5">
+                    <% if data["company"].present? %>
+                      <div class="border-t pt-4">
+                        <h4 class="font-semibold text-base-content">Company Info</h4>
+                        <div class="text-sm text-base-content/80 space-y-2 mt-3">
+                          <div><strong>Name:</strong> <%= data["company"]["name"] %></div>
+                          <div>
+                            <strong>Website:</strong>
+                            <a href="<%= data["company"]["website"] %>" target="_blank" class="text-primary hover:underline">
+                              <%= data["company"]["website"] %>
+                            </a>
                           </div>
-                          <% if data["company"].present? %>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
-                              <div><strong>Name:</strong> <%= data["company"]["name"] %></div>
-                              <div><strong>Website:</strong> <a href="<%= data["company"]["website"] %>" target="_blank" class="text-primary hover:underline"><%= data["company"]["website"] %></a></div>
-                              <div><strong>Industry:</strong> <%= data["company"]["industry"] %></div>
-                              <div><strong>Employees:</strong> <%= data["company"]["employee_count"] %></div>
-                            </div>
-                          <% end %>
-                          <% if data["contact"].present? %>
-                            <div>
-                              <h3 class="text-md font-semibold">Contact</h3>
-                              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
-                                <div><strong>Name:</strong> <%= data["contact"]["name"] %></div>
-                                <div><strong>Position:</strong> <%= data["contact"]["position"] %></div>
-                                <div><strong>Email:</strong> <a href="mailto:<%= data["contact"]["email"] %>" class="text-primary hover:underline"><%= data["contact"]["email"] %></a></div>
-                                <div><strong>Phone:</strong> <%= data["contact"]["phone_number"] %></div>
-                                <div><strong>Decision Maker:</strong> <%= data["contact"]["is_decision_maker"] ? "Yes" : "No" %></div>
-                              </div>
-                            </div>
-                          <% end %>
+                          <div><strong>Industry:</strong> <%= data["company"]["industry"] %></div>
+                          <div><strong>Employees:</strong> <%= data["company"]["employee_count"] %></div>
+                        </div>
+                      </div>
+                    <% end %>
 
-                          <% if data["score_lead"].present? %>
-                            <div>
-                              <h3 class="text-md font-semibold">Lead Score</h3>
-                              <div class="text-sm text-gray-700">
-                                <strong>Potential Score:</strong>
-                                <span class="<%= data["score_lead"]["potential_score"] >= 80 ? 'text-green-600' : (data["score_lead"]["potential_score"] >= 50 ? 'text-yellow-600' : 'text-red-600') %>">
-                                  <%= data["score_lead"]["potential_score"] %>/100
-                                </span>
-                              </div>
-                            </div>
-                          <% end %>
+                    <% if data["contact"].present? %>
+                      <div class="border-t pt-4">
+                        <h4 class="font-semibold text-base-content mb-3">Contact</h4>
+                        <div class="text-sm text-base-content/80 space-y-2">
+                          <div><strong>Name:</strong> <%= data["contact"]["name"] %></div>
+                          <div><strong>Position:</strong> <%= data["contact"]["position"] %></div>
+                          <div>
+                            <strong>Email:</strong>
+                            <a href="mailto:<%= data["contact"]["email"] %>" class="text-primary hover:underline">
+                              <%= data["contact"]["email"] %>
+                            </a>
+                          </div>
+                          <div><strong>Phone:</strong> <%= data["contact"]["phone_number"] %></div>
+                          <div><strong>Decision Maker:</strong> <%= data["contact"]["is_decision_maker"] ? "Yes" : "No" %></div>
+                        </div>
+                      </div>
+                    <% end %>
 
-                          <% if data["jobs"].present? %>
-                            <div>
-                              <h3 class="text-md font-semibold mb-2">Job Listings:</h3>
-                              <div class="space-y-2">
-                                <% if data["jobs"]["listings"].present? %>
-                                  <% data["jobs"]["listings"].each_with_index do |job, index| %>
-                                    <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box text-sm">
-                                      <input type="checkbox" id="job-<%= index %>" />
-                                      <div class="collapse-title text-md font-medium">
-                                        <%= job["title"] %> - <%= job["department"] %> (<%= job["location"] %>)
-                                      </div>
-                                      <div class="collapse-content text-sm text-gray-700 space-y-2">
-                                        <div><strong>Level:</strong> <%= job["level"] %></div>
-                                        <div><strong>Type:</strong> <%= job["employment_type"] %></div>
-                                        <div><strong>Salary:</strong> <%= job["salary_range"] %></div>
+                    <% if data["score_lead"].present? %>
+                      <div class="border-t pt-4">
+                        <h4 class="font-semibold text-base-content mb-2">Score</h4>
+                        <span class="badge <%= data["score_lead"]["potential_score"] >= 80 ? 'badge-success' : (data["score_lead"]["potential_score"] >= 50 ? 'badge-warning' : 'badge-error') %> badge-md">
+                          <%= data["score_lead"]["potential_score"] %>/100
+                        </span>
+                      </div>
+                    <% end %>
 
-                                        <% if job["tech_stack"].present? %>
-                                          <div>
-                                            <strong>Tech Stack:</strong>
-                                            <div class="flex flex-wrap gap-2 mt-1">
-                                              <% job["tech_stack"].each do |tech| %>
-                                                <span class="badge badge-primary"><%= tech %></span>
-                                              <% end %>
-                                            </div>
-                                          </div>
+                    <% if data["jobs"].present? %>
+                      <div class="border-t pt-4">
+                        <h4 class="font-semibold text-base-content mb-3">Job Listings</h4>
+                        <div class="space-y-3">
+                          <% if data["jobs"]["listings"].present? %>
+                            <% data["jobs"]["listings"].each_with_index do |job, index| %>
+                              <div class="collapse collapse-arrow border border-base-200 bg-base-100 rounded-lg">
+                                <input type="checkbox" id="job-<%= index %>-<%= data_temp.crawl_source.id %>" />
+                                <div class="collapse-title font-medium text-base-content">
+                                  <%= job["title"] %> - <%= job["department"] %> (<%= job["location"] %>)
+                                </div>
+                                <div class="collapse-content text-sm text-base-content/80 space-y-2">
+                                  <div><strong>Level:</strong> <%= job["level"] %></div>
+                                  <div><strong>Type:</strong> <%= job["employment_type"] %></div>
+                                  <div><strong>Salary:</strong> <%= job["salary_range"] %></div>
+                                  <% if job["tech_stack"].present? %>
+                                    <div>
+                                      <strong>Tech Stack:</strong>
+                                      <div class="flex flex-wrap gap-2 mt-1">
+                                        <% job["tech_stack"].each do |tech| %>
+                                          <span class="badge badge-primary badge-sm"><%= tech %></span>
                                         <% end %>
                                       </div>
                                     </div>
                                   <% end %>
-                                <% else %>
-                                <p class="text-gray-500 italic">Empty Listings</p>
-                                <% end %>
+                                </div>
                               </div>
-                            </div>
+                            <% end %>
+                          <% else %>
+                            <p class="text-base-content/60 italic">No job listings available</p>
                           <% end %>
                         </div>
-                      <% else %>
-                        <p class="text-gray-500 italic">No data available for this entry</p>
-                      <% end %>
+                      </div>
                     <% end %>
                   </div>
                 </div>
-              </dialog>
+              </div>
             <% end %>
           <% end %>
         <% else %>
-          <div class="text-center p-6">
-            <p class="text-gray-500">No pending sources to approve</p>
+          <div class="text-center p-6 col-span-full">
+            <p class="text-base-content/60 text-lg">No pending data to approve</p>
           </div>
         <% end %>
       </div>

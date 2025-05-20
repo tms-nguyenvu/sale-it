@@ -3,7 +3,7 @@ class CrawlSourceWorker
 
   def perform(source_id)
     source = CrawlSource.find(source_id)
-    if source.approval_status == "approved" && source.status === "active"
+    if source.status === "active"
       Crawler::CrawlSourceService.new(source.source_url, source.source_type).process
     end
   end

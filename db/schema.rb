@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_19_034507) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_20_073943) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,10 +71,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_034507) do
     t.datetime "updated_at", null: false
     t.string "suggested_action"
     t.string "reasoning"
-    t.bigint "lead_id"
     t.index ["contact_id"], name: "index_email_replies_on_contact_id"
     t.index ["email_id"], name: "index_email_replies_on_email_id"
-    t.index ["lead_id"], name: "index_email_replies_on_lead_id"
     t.index ["user_id"], name: "index_email_replies_on_user_id"
   end
 
@@ -247,7 +245,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_034507) do
   add_foreign_key "crawl_data_temporaries", "crawl_sources", on_delete: :cascade
   add_foreign_key "email_replies", "contacts"
   add_foreign_key "email_replies", "emails"
-  add_foreign_key "email_replies", "leads"
   add_foreign_key "email_replies", "users"
   add_foreign_key "email_suggestions", "emails"
   add_foreign_key "email_trackings", "emails"

@@ -15,8 +15,17 @@
         <div>
           <fieldset class="fieldset">
             <legend class="fieldset-legend text-sm font-medium">Customer</legend>
-            <% if @companies.present? %>
+            <% if @company.present? %>
               <select name="proposal[company_name]" class="select w-full" id="company_name_select">
+                <% lead = @leads.find { |l| l.company_id == @company.id } %>
+                <option value="<%= @company.name %>" data-company-id="<%= @company.id %>">
+                  <%= @company.name %> (<%= @company.industry %>) - Lead ID: <%= lead&.id %> - <%= lead&.status %>
+                </option>
+              </select>
+              <%= hidden_field_tag 'proposal[company_id]', @company.id, id: 'company_id_field' %>
+            <% elsif @companies.present? %>
+              <select name="proposal[company_name]" class="select w-full" id="company_name_select">
+                <option value="" disabled selected>Select a company</option>
                 <% @companies.each do |company| %>
                   <% lead = @leads.find { |l| l.company_id == company.id } %>
                   <option value="<%= company.name %>" data-company-id="<%= company.id %>">
@@ -45,6 +54,7 @@
             <legend class="fieldset-legend text-sm font-medium">Template proposal</legend>
             <% if @template_proposals.present? %>
               <select name="proposal[template_sections][]" class="select w-full" id="template_proposal_select">
+                <option value="" disabled selected>Select a template</option>
                 <% @template_proposals.each do |template| %>
                   <option value="<%= template.template_sections.map { |section| { title: section.title, content: section.content } }.to_json %>" data-template-id="<%= template.id %>">
                     <%= template.name %>
@@ -125,7 +135,7 @@
     <div class="modal-action mt-8 flex gap-4 justify-end">
       <div id="proposal-modal-buttons" class="flex gap-3">
         <div class="dropdown dropdown-top">
-          <label tabindex="0" class="btn btn-outline btn-neutral px-6">
+          <label tabindex="0" class="btn btn-sm btn-outline btn-neutral px-6">
             <i data-lucide="menu" class="size-4"></i> Actions
           </label>
           <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
@@ -141,11 +151,11 @@
             </li>
           </ul>
         </div>
-        <label for="proposal-preview-modal" class="btn btn-neutral px-6">Close</label>
+        <label for="proposal-preview-modal" class="btn btn-sm btn-neutral px-6">Close</label>
       </div>
       <div id="proposal-edit-buttons" class="flex gap-3">
-        <button type="button" id="cancel-edit-btn" class="btn btn-outline btn-neutral px-6">Cancel</button>
-        <button type="button" id="save-proposal-btn" class="btn btn-primary px-6">Save Changes</button>
+        <button type="button" id="cancel-edit-btn" class="btn btn-sm btn-outline btn-neutral px-6">Cancel</button>
+        <button type="button" id="save-proposal-btn" class="btn btn-sm btn-primary px-6">Save Changes</button>
       </div>
     </div>
   </div>
