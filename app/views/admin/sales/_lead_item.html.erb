@@ -9,9 +9,26 @@
           <% if lead.end_date && lead.end_date < Date.today %>
             <span class="badge badge-error badge-sm">Expired</span>
           <% end %>
-          <div class="tooltip" data-tip="Edit card">
-            <div onclick="document.getElementById('modal_<%= lead.id %>').showModal()" class="btn btn-ghost btn-sm">
-              <i data-lucide="ellipsis" class="h-4 w-4 text-gray-500"></i>
+          <div class="tooltip" data-tip="Actions">
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-sm border-none">
+                <i data-lucide="ellipsis" class="h-4 w-4 text-gray-500"></i>
+              </div>
+              <ul tabindex="0" class="dropdown-content menu bg-gray-100 rounded-box z-1 w-52 p-2 shadow-md border">
+                <li onclick="document.getElementById('modal_<%= lead.id %>').showModal()">
+                  <a>Edit lead <i data-lucide="square-pen" class="size-4"></i></a>
+                </li>
+                <li>
+                  <%= link_to new_admin_email_path(contact_id: lead.contact_id) do %>
+                    Send email <i data-lucide="send-horizontal" class="size-4"></i>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to new_admin_proposal_path(lead_id: lead.id) do %>
+                    Create proposal <i data-lucide="file" class="size-4"></i>
+                  <% end %>
+                </li>
+              </ul>
             </div>
           </div>
           <%= render 'admin/sales/edit_modal', lead: lead %>

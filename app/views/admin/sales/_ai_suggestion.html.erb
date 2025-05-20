@@ -26,6 +26,10 @@
             <div class="space-y-1">
               <h4 class="text-base font-semibold text-gray-800"><%= suggestion["suggested_action"] %></h4>
               <p class="text-sm text-gray-600 line-clamp-2"><%= suggestion["reasoning"] %></p>
+              <div class="flex flex-wrap gap-2 text-sm text-gray-600">
+                <span><strong>Lead ID:</strong> #<%= lead.id %></span>
+                <span><strong>Status:</strong> <span class="badge <%= badge_class %> capitalize"><%= lead.status&.humanize %></span></span>
+              </div>
               <div class="text-sm font-medium text-gray-700">
                 Win Probability: <span class="text-primary"><%= suggestion["win_probability"] %>%</span>
               </div>
@@ -117,7 +121,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                   <i data-lucide="percent" class="lucide flex-shrink-0 lucide-percent size-5 text-primary"></i>
-                    <div class="font-medium text-gray-700">Win Probability: <%= suggestion["win_probability"] %>%</div>
+                  <div class="font-medium text-gray-700">Win Probability: <%= suggestion["win_probability"] %>%</div>
                 </div>
               </div>
             </div>

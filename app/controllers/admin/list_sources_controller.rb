@@ -5,6 +5,7 @@ class Admin::ListSourcesController < ApplicationController
 
   def index
     @crawl_sources = CrawlSource.all
+    @crawl_data_temporaries = CrawlDataTemporary.all
   end
 
   def update

@@ -17,13 +17,17 @@ class Admin::CrawlSourcesController < ApplicationController
     def create
       begin
         scheduled = params[:scheduled] == "1"
-        Crawler::CrawlSourceService.new(params[:source_url], params[:source_type], scheduled).process
+        Crawler::CrawlSourceService.new(
+          params[:source_url],
+          params[:source_type],
+          scheduled,
+          params[:description]
+        ).process
         redirect_to admin_list_sources_path, notice: "Source created successfully"
       rescue StandardError => e
         redirect_to admin_list_sources_path, alert: e.message
       end
     end
-
 
     def update
       @crawl_source = CrawlSource.find(params[:id])
@@ -46,6 +50,6 @@ class Admin::CrawlSourcesController < ApplicationController
     end
 
     def crawl_source_params
-      params.require(:crawl_source).permit(:source_url, :source_type, :status)
+      params.require(:crawl_source).permit(:source_url, :source_type, :status, :description)
     end
 end

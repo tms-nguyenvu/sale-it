@@ -43,17 +43,18 @@ class Admin::EmailsController < ApplicationController
 
   def create
     begin
-      email =  Email.create!(
-        subject: params[:subject],
-        body: params[:body],
-        contact_id: params[:email][:contact_id],
-        user_id: current_user.id,
-        status: :sent,
-        tone: params[:tone].to_s || "professional",
-        sent_at: Time.current
-      )
-      lead = Lead.find_by(contact_id: email.contact_id)
+      lead = Lead.find_by(contact_id: params[:email][:contact_id])
       if lead
+        email = Email.create!(
+          subject: params[:subject],
+          body: params[:body],
+          contact_id: params[:email][:contact_id],
+          user_id: current_user.id,
+          status: :sent,
+          tone: params[:tone].to_s || "professional",
+          sent_at: Time.current,
+          lead_id: lead.id
+        )
         lead.update(status: "sent")
         GenerateLeadSuggestionJob.perform_later(lead.id)
         Rails.logger.info("Updated Lead ID #{lead.id} to status: email_sent")

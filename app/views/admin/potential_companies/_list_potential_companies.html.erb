@@ -1,5 +1,5 @@
 <div class="mt-6 space-y-6">
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <% @companies.each do |company| %>
       <div class="card bg-white border rounded-xl shadow-lg">
         <div class="card-body p-5 space-y-3">
@@ -51,7 +51,7 @@
           </div>
 
           <div class="flex justify-end gap-2 pt-3 border-t border-gray-100">
-            <button class="btn btn-outline text-gray-700 hover:bg-gray-100"
+            <button class="btn btn-outline btn-sm"
                     onclick="document.getElementById('modal_<%= company.id %>').showModal()">
               Details
             </button>
@@ -59,7 +59,7 @@
                           admin_leads_path(company_id: company.id),
                           method: :post,
                           data: { turbo: false },
-                          class: "btn btn-neutral" %>
+                          class: "btn btn-neutral btn-sm" %>
           </div>
 
           <dialog id="modal_<%= company.id %>" class="modal">
@@ -131,11 +131,6 @@
                     <span class="text-gray-400 italic">No open jobs</span>
                   <% end %>
                 </div>
-              </div>
-              <div class="modal-action mt-6">
-                <form method="dialog">
-                  <button class="btn btn-outline">Close</button>
-                </form>
               </div>
             </div>
             <form method="dialog" class="modal-backdrop">
