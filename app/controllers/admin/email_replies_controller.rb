@@ -4,7 +4,7 @@ class Admin::EmailRepliesController < ApplicationController
 
   def index
     @q = Email.ransack(params[:q])
-    @emails = @q.result.includes(:contact, :user, :email_replies).order(sent_at: :desc)
+    @pagy, @emails = pagy(@q.result.includes(:contact, :user, :email_replies).order(sent_at: :desc), limit: 6)
     @email_suggestions = EmailSuggestion.all
   end
 

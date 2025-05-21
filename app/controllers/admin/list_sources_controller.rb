@@ -3,9 +3,10 @@ class Admin::ListSourcesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_list_sources, only: [ :update ]
 
+
   def index
     @crawl_sources = CrawlSource.all
-    @crawl_data_temporaries = CrawlDataTemporary.all
+    @pagy, @crawl_data_temporaries = pagy(CrawlDataTemporary.all, limit: 9)
   end
 
   def update

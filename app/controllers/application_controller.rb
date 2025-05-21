@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
+  include Pagy::Backend
   allow_browser versions: :modern
+
 
   rescue_from Exception, with: :handle_exception
   rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found

@@ -14,7 +14,8 @@ class Admin::PotentialCompaniesController < ApplicationController
       potential_score: nil
     ).includes(:jobs, :contacts, :leads).ransack(params[:q])
 
-    @companies = @q.result(distinct: true)
+    result = @q.result(distinct: true)
+    @pagy, @companies = pagy(result, limit: 9)
 
     respond_to do |format|
       format.html
