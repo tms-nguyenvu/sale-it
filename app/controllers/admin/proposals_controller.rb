@@ -34,7 +34,6 @@ class Admin::ProposalsController < ApplicationController
   def create
     company_id = params.dig(:proposal, :company_id)
     lead = Lead.find_by(company_id: company_id)
-
     unless lead
       respond_to do |format|
         format.html do
@@ -54,6 +53,7 @@ class Admin::ProposalsController < ApplicationController
       customized_proposal: params.dig(:proposal, :customized_proposal),
       status: "sent"
     )
+    authorize! :update, lead
     lead.update(status: "negotiate")
     GenerateLeadSuggestionJob.perform_later(lead.id)
 

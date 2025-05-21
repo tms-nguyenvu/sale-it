@@ -1,0 +1,107 @@
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">Team Management</h1>
+      <p class="text-gray-600">Team management & work distribution</p>
+    </div>
+  </div>
+
+  <div class="space-y-6 mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6 pb-3">
+          <h3 class="text-2xl font-semibold leading-none tracking-tight">Team member</h3>
+          <p class="text-sm text-gray-600">Member management and authorization</p>
+        </div>
+        <div class="p-6 pt-0">
+          <div class="space-y-4">
+            <% @users.each do |user| %>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="avatar placeholder">
+                    <div class="bg-neutral text-neutral-content w-8 rounded-full !flex items-center justify-center">
+                      <span class="text-md font-bold"><%= user.email[0].upcase %></span>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="font-medium"><%= user.email %></p>
+                    <p class="text-sm text-gray-600"><%= user.roles.first&.name&.humanize %></p>
+                  </div>
+                </div>
+                <div class="inline-flex items-center 
+                rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors 
+                focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 
+                border-transparent bg-primary text-primary-foreground hover:bg-primary/80">
+                  <%= user.roles.first&.name&.humanize == "Admin" ? "Manager" : "Staff" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6 pb-3">
+          <h3 class="text-2xl font-semibold leading-none tracking-tight">Team performance</h3>
+          <p class="text-sm text-gray-600">Track KPIs and goals</p>
+        </div>
+        <div class="p-6 pt-0">
+          <div class="space-y-2">
+            <fieldset class="fieldset">
+              <div class="flex justify-between">
+                <legend class="fieldset-legend">Number of new leads</legend>
+                <legend class="fieldset-legend"><%= @new_leads.count %></legend>
+              </div>
+              <progress class="w-full progress progress-accent" value="<%= @new_leads.count %>" max="100"></progress>
+            </fieldset>
+            <fieldset class="fieldset">
+              <div class="flex justify-between">
+                <legend class="fieldset-legend">Conversion rate</legend>
+                <legend class="fieldset-legend"><%= @conversion_rate %>%</legend>
+              </div>
+              <progress class="w-full progress progress-accent" value="<%= @conversion_rate %>" max="100"></progress>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+        <div class="flex flex-col space-y-1.5 p-6 pb-3">
+          <h3 class="text-2xl font-semibold leading-none tracking-tight">Tasks to be done</h3>
+          <p class="text-sm text-gray-600">Pending jobs</p>
+        </div>
+        <div class="p-6 pt-0">
+          <div class="space-y-4">
+            <% if @leads.present? %>
+              <% @leads.each do |lead| %>
+                <div class="flex items-center space-x-3">
+                  <i data-lucide="circle-check" class="lucide lucide-circle-check h-5 w-5 text-gray-300"></i>
+                  <div>
+                    <p class="font-medium"><%= lead&.project_name || lead.company.name %></p>
+                    <div class="flex items-center mt-1">
+                      <i data-lucide="clock" class="lucide lucide-clock h-3 w-3 text-gray-600 mr-1"></i>
+                      <p class="text-xs text-gray-600">
+                        <%= format_deadline(lead.end_date) %>
+                      </p>
+                      <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold 
+                      transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 
+                      text-foreground ml-2 text-xs">
+                        <%= lead.priority%>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              <%= link_to admin_potential_companies_path, class: "btn w-full" do %>
+                <i data-lucide="circle-plus" class="lucide lucide-circle-plus h-4 w-4 mr-2"></i>
+                Add new tasks
+              <% end %>
+            <% else %>
+              <div>
+                Tasks is empty
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

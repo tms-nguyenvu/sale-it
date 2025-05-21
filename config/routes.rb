@@ -39,6 +39,9 @@ Rails.application.routes.draw do
     resources :proposals
     resources :proposal_optimizations, only: %i[create]
     resources :proposal_templates, only: %i[index new create update destroy]
+
+    # Team management
+    resources :team_managements, only: %i[index]
   end
 
   root "admin/dashboard#index"

@@ -22,9 +22,8 @@
         badge_class: 'badge-warning' %>
     <%= render 'admin/sales/kanban_column',
         status: 'negotiate',
-        title: 'Negotiation',
-        leads: @negotiate_leads,
+        title: 'Negotiation/Closed',
+        leads: @negotiate_and_closed_leads,
         badge_class: 'badge-error' %>
   </div>
 </div>
-
