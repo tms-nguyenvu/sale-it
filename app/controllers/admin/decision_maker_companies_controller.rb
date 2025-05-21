@@ -5,7 +5,7 @@ class Admin::DecisionMakerCompaniesController < ApplicationController
   def index
     @q = Contact.where(is_decision_maker: true).ransack(params[:q])
 
-    @contacts = @q.result(distinct: true)
+    @pagy, @contacts = pagy(@q.result(distinct: true), limit: 9)
 
     respond_to do |format|
       format.html

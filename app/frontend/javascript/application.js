@@ -1,4 +1,5 @@
 import { createIcons, icons } from "lucide"
+import "chartkick/chart.js"
 import "@hotwired/turbo-rails"
 import "./controllers"
 

@@ -103,5 +103,131 @@
         </div>
       </div>
     </div>
+    <div>
+      <div class="tabs tabs-border">
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Personal performance" checked="checked" />
+        <div class="tab-content border-base-300 bg-base-100 p-10">
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="rounded-lg border bg-card p-6">
+                <div class="flex flex-col items-start gap-2">
+                  <div class="flex items-center">
+                    <i data-lucide="briefcase" class="lucide lucide-briefcase h-5 w-5 text-blue-500 mr-2"></i>
+                    <h4 class="text-xl font-semibold">Leads are being processed</h4>
+                  </div>
+                  <p class="text-3xl font-bold"><%= @active_leads %></p>
+                  <p class="text-sm text-gray-600">Number of leads in progress</p>
+                </div>
+              </div>
+
+              <div class="rounded-lg border bg-card p-6">
+                <div class="flex flex-col items-start gap-2">
+                  <div class="flex items-center">
+                    <i data-lucide="check-circle" class="lucide lucide-check-circle h-5 w-5 text-green-500 mr-2"></i>
+                    <h4 class="text-xl font-semibold">Deal has been closed</h4>
+                  </div>
+                  <p class="text-3xl font-bold"><%= @won_deals %></p>
+                  <p class="text-sm text-gray-600">Number of successful deals closed</p>
+                </div>
+              </div>
+
+              <div class="rounded-lg border bg-card p-6">
+                <div class="flex flex-col items-start gap-2">
+                  <div class="flex items-center">
+                    <i data-lucide="trending-up" class="lucide lucide-trending-up h-5 w-5 text-purple-500 mr-2"></i>
+                    <h4 class="text-xl font-semibold">Conversion rate</h4>
+                  </div>
+                  <p class="text-3xl font-bold"><%= @personal_conversion %>%</p>
+                  <div class="w-full mt-2">
+                    <div class="flex justify-between text-sm mb-1">
+                      <span>Progress</span>
+                      <span><%= @won_deals %>/<%= @total_leads %> leads</span>
+                    </div>
+                    <progress class="w-full progress progress-accent" value="<%= @personal_conversion %>" max="100"></progress>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-lg border bg-card">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-4">Your recent activity</h4>
+                <div class="space-y-4">
+                  <% @my_recent_leads.each do |lead| %>
+                    <div class="flex items-center space-x-4 pb-4 border-b border-gray-100">
+                      <div class="p-2 bg-blue-50 rounded-md">
+                        <i data-lucide="activity" class="lucide lucide-activity h-5 w-5 text-blue-500"></i>
+                      </div>
+                      <div>
+                        <p class="font-medium"><%= lead.project_name || lead.company.name %></p>
+                        <p class="text-sm text-gray-500">
+                          <%= lead.status&.humanize %>
+                          <% if lead.end_date %>
+                            <%= format_deadline(lead.end_date) %>
+                          <% end %>
+                        </p>
+                      </div>
+                      <div class="ml-auto">
+                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+                          <%= lead.outcome == 'won' ? 'bg-green-100 text-green-800' :
+                              lead.outcome == 'lost' ? 'bg-red-100 text-red-800' :
+                              'bg-blue-100 text-blue-800' %>">
+                          <%= lead.outcome&.humanize || lead.status&.humanize %>
+                        </span>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <input type="radio" name="my_tabs_2" class="tab" aria-label="Team performance" />
+        <div class="tab-content border-base-300 bg-base-100 p-10">
+          <div class="space-y-6">
+            <div class="rounded-lg border bg-card">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-6">Overall team performance</h4>
+                <div class="space-y-6">
+                  <% @team_performance.each do |member| %>
+                    <div class="border-b border-gray-100 pb-6 last:border-b-0 last:pb-0">
+                      <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                          <div class="avatar placeholder">
+                            <div class="bg-neutral text-neutral-content w-10 rounded-full !flex items-center justify-center">
+                              <span class="text-md font-bold"><%= member[:user].email[0].upcase %></span>
+                            </div>
+                          </div>
+                          <div>
+                            <p class="font-medium"><%= member[:user].email %></p>
+                            <p class="text-sm text-gray-500"><%= member[:user].roles.first&.name&.humanize %></p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                          <p class="text-2xl font-semibold"><%= member[:active_leads] %></p>
+                          <p class="text-sm text-gray-500 mt-1">Lead processing</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                          <p class="text-2xl font-semibold"><%= member[:won_deals] %></p>
+                          <p class="text-sm text-gray-500 mt-1">Deal has been closed</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                          <p class="text-2xl font-semibold"><%= member[:conversion_rate] %>%</p>
+                          <p class="text-sm text-gray-500 mt-1">Conversion rate</p>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

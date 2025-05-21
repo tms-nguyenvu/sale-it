@@ -6,7 +6,7 @@ class Admin::CrawlSourcesController < ApplicationController
     INTERVAL_HOURS = 2.hour
 
     def index
-      @crawl_sources = CrawlSource.all
+      @pagy, @crawl_sources = pagy(CrawlSource.all)
       @active_sources = CrawlSource.active_sources
       @paused_sources = CrawlSource.paused_sources
       @pending_approval = CrawlSource.pending_approval

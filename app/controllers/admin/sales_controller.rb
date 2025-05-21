@@ -15,7 +15,7 @@ class Admin::SalesController < ApplicationController
     @demo_leads = Lead.where(status: :demo)
     @negotiate_and_closed_leads = Lead.where(status: [ :negotiate, :closed ])
 
-    @lead_suggestions = Lead.where.not(suggestions: nil)
+    @pagy, @lead_suggestions = pagy(Lead.where.not(suggestions: nil), limit: 3)
   end
 
   def create

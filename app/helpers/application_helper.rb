@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Frontend
+
   def format_deadline(end_date)
     puts "end_date: #{end_date}"
     return "Due: --" if end_date.nil?

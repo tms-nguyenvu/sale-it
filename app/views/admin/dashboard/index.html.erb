@@ -1,230 +1,126 @@
-<div class="space-y-6 p-6 bg-base-100">
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div class="space-y-8 p-8 bg-gray-50 rounded-2xl shadow-sm">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
     <div>
-      <h1 class="text-2xl font-bold tracking-tight">Dashboard</h1>
-      <p class="text-base-content/60">Overview of sales activities and team performance</p>
+      <h1 class="text-3xl font-bold text-gray-800">Analytics Dashboard</h1>
+      <p class="text-gray-500 mt-2">Overview of sales activities and team performance</p>
     </div>
   </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="card bg-white border p-4">
-      <div class="flex items-center gap-3">
-        <div class="avatar">
-          <div class="w-10 h-10 rounded-full bg-primary/10 !flex items-center justify-center">
-            <i data-lucide="users" class="lucide lucide-users h-5 w-5 text-primary"></i>
-          </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+          <i data-lucide="users" class="h-6 w-6 text-blue-600"></i>
         </div>
         <div>
-          <p class="text-sm text-base-content/60">Leads</p>
-          <h3 class="text-2xl font-bold"><%= Lead.count %></h3>
+          <p class="text-sm font-medium text-gray-500">Total Leads</p>
+          <h3 class="text-2xl font-bold text-blue-600"><%= @total_leads %></h3>
         </div>
       </div>
     </div>
-    <div class="card bg-white border p-4">
-      <div class="flex items-center gap-3">
-        <div class="avatar">
-          <div class="w-10 h-10 rounded-full bg-emerald-100 !flex items-center justify-center">
-            <i data-lucide="file-text" class="lucide lucide-file-text h-5 w-5 text-accent"></i>
-          </div>
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center">
+          <i data-lucide="file-text" class="h-6 w-6 text-emerald-600"></i>
         </div>
         <div>
-          <p class="text-sm text-base-content/60">Proposals</p>
-          <h3 class="text-2xl font-bold"><%= Proposal.count %></h3>
+          <p class="text-sm font-medium text-gray-500">Total Proposals</p>
+          <h3 class="text-2xl font-bold text-emerald-600"><%= @total_proposals %></h3>
         </div>
       </div>
     </div>
-    <div class="card bg-white border p-4">
-      <div class="flex items-center gap-3">
-        <div class="avatar">
-          <div class="w-10 h-10 rounded-full bg-green-100 !flex items-center justify-center">
-            <i data-lucide="briefcase" class="lucide lucide-briefcase h-5 w-5 text-success"></i>
-          </div>
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">
+          <i data-lucide="briefcase" class="h-6 w-6 text-purple-600"></i>
         </div>
         <div>
-          <p class="text-sm text-base-content/60">Companies</p>
-          <h3 class="text-2xl font-bold"><%= Company.count %></h3>
+          <p class="text-sm font-medium text-gray-500">Total Companies</p>
+          <h3 class="text-2xl font-bold text-purple-600"><%= @total_companies %></h3>
         </div>
       </div>
     </div>
-    <div class="card bg-white border p-4">
-      <div class="flex items-center gap-3">
-        <div class="avatar">
-          <div class="w-10 h-10 rounded-full bg-yellow-100 !flex items-center justify-center">
-            <i data-lucide="mail" class="lucide lucide-mail h-5 w-5 text-warning"></i>
-          </div>
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center">
+          <i data-lucide="mail" class="h-6 w-6 text-amber-600"></i>
         </div>
         <div>
-          <p class="text-sm text-base-content/60">Emails Sent</p>
-          <h3 class="text-2xl font-bold"><%= Email.where(status: :sent).count %></h3>
+          <p class="text-sm font-medium text-gray-500">Emails Sent</p>
+          <h3 class="text-2xl font-bold text-amber-600"><%= @total_sent_emails %></h3>
         </div>
       </div>
     </div>
   </div>
-
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="rounded-lg border bg-base-100 shadow-sm">
-      <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-xl font-semibold leading-none tracking-tight">Recent Leads</h3>
-      </div>
-      <div class="p-6 pt-0">
-        <div class="space-y-3">
-          <% @leads.each do |lead| %>
-            <div class="flex items-center justify-between p-3 bg-base-100 rounded-lg hover:bg-base-200 transition-colors duration-200">
-              <div class="flex items-center gap-3">
-                <i data-lucide="users" class="lucide lucide-users h-5 w-5 text-primary"></i>
-                <div>
-                  <div class="font-medium text-base"><%= lead.company&.name || 'N/A' %></div>
-                  <div class="text-sm text-base-content/60"><%= lead.created_at.strftime("%B %d, %Y %I:%M %p") %></div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="badge badge-primary bg-primary/10 text-primary border-primary/20 font-semibold px-3 py-1 rounded-full capitalize text-sm">
-                  <%= lead.status %>
-                </span>
-                <div class="dropdown dropdown-end">
-                  <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                    <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-md border border-base-200">
-                    <li><a>Details</a></li>
-                    <li><a>Edit</a></li>
-                    <li><a>Delete</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        </div>
+    <div class="card bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Lead Distribution</h3>
+      <div class="relative h-80">
+        <%= pie_chart @lead_stats, colors: ["#10B981", "#3B82F6", "#F59E0B", "#EF4444"], donut: true, legend: true, height: "320px" %>
       </div>
     </div>
-
-    <div class="rounded-lg border bg-base-100 shadow-sm">
-      <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-xl font-semibold leading-none tracking-tight">Recent Proposals</h3>
-      </div>
-      <div class="p-6 pt-0">
-        <div class="space-y-3">
-          <% @proposals.each do |proposal| %>
-            <div class="flex items-center justify-between p-3 bg-base-100 rounded-lg hover:bg-base-200 transition-colors duration-200">
-              <div class="flex items-center gap-3">
-                <i data-lucide="file-text" class="lucide lucide-file-text h-5 w-5 text-primary"></i>
-                <div>
-                  <div class="font-medium text-base"><%= proposal.title %></div>
-                  <div class="text-sm text-base-content/60"><%= proposal.created_at.strftime("%B %d, %Y %I:%M %p") %></div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="badge badge-primary bg-primary/10 text-primary border-primary/20 font-semibold px-3 py-1 rounded-full capitalize text-sm">
-                  <%= proposal.status %>
-                </span>
-                <div class="dropdown dropdown-end">
-                  <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                    <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-md border border-base-200">
-                    <li><label for="proposal-modal-<%= proposal.id %>" class="cursor-pointer">Details</label></li>
-                    <li><a>Edit</a></li>
-                    <li><a>Delete</a></li>
-                    <li><a>Download</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <input type="checkbox" id="proposal-modal-<%= proposal.id %>" class="modal-toggle" />
-            <div class="modal" role="dialog">
-              <div class="modal-box bg-base-100 p-6 max-w-3xl">
-                <div class="flex justify-between items-center mb-6">
-                  <h3 class="text-2xl font-bold text-base-content"><%= proposal.title %></h3>
-                  <label for="proposal-modal-<%= proposal.id %>" class="btn btn-sm btn-circle btn-ghost">✕</label>
-                </div>
-                <div class="space-y-4">
-                  <div class="flex items-center gap-4">
-                    <span class="badge badge-primary bg-primary/10 text-primary border-primary/20 font-semibold px-4 py-2 capitalize text-base">
-                      <%= proposal.status %>
-                    </span>
-                    <% if proposal.pdf_ur.present? %>
-                      <a href="<%= proposal.pdf_ur %>" class="btn btn-primary btn-sm" target="_blank">
-                        <i data-lucide="download" class="lucide lucide-download h-4 w-4"></i>
-                        Download PDF
-                      </a>
-                    <% end %>
-                  </div>
-                  <div class="bg-base-200 p-4 rounded-lg">
-                    <h4 class="text-lg font-semibold mb-2">Requirement</h4>
-                    <div class="prose text-base-content/80 max-w-none">
-                      <%= simple_format(proposal.requirement) %>
-                    </div>
-                  </div>
-                  <div class="bg-base-200 p-4 rounded-lg">
-                    <h4 class="text-lg font-semibold mb-2">Details</h4>
-                    <div class="space-y-2 text-base-content/80">
-                      <p><span class="font-medium">Lead:</span> <%= proposal.lead&.company&.name || 'N/A' %></p>
-                      <p><span class="font-medium">Template Proposal:</span> <%= proposal.template_proposal&.name || 'N/A' %></p>
-                      <p><span class="font-medium">Created:</span> <%= proposal.created_at.strftime("%B %d, %Y %I:%M %p") %></p>
-                      <p><span class="font-medium">Updated:</span> <%= proposal.updated_at.strftime("%B %d, %Y %I:%M %p") %></p>
-                    </div>
-                  </div>
-                  <% if proposal.customized_proposal.present? %>
-                    <div class="bg-base-200 p-4 rounded-lg">
-                      <h4 class="text-lg font-semibold mb-2">Customized Proposal</h4>
-                      <div class="space-y-4">
-                        <% custom_proposal = JSON.parse(proposal.customized_proposal) rescue {} %>
-                        <h5 class="text-xl font-bold"><%= custom_proposal['title'] %></h5>
-                        <% custom_proposal['content']&.each do |section| %>
-                          <div class="prose text-base-content/80 max-w-none">
-                            <h6 class="text-base font-semibold"><%= section['title'] %></h6>
-                            <%= simple_format(section['content']) %>
-                          </div>
-                        <% end %>
-                      </div>
-                    </div>
-                  <% end %>
-                </div>
-                <div class="modal-action mt-6">
-                  <label for="proposal-modal-<%= proposal.id %>" class="btn btn-primary">Close</label>
-                </div>
-              </div>
-              <label class="modal-backdrop" for="proposal-modal-<%= proposal.id %>">Close</label>
-            </div>
-          <% end %>
-        </div>
+    <div class="card bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Proposal Status</h3>
+      <div class="relative h-80">
+        <%= pie_chart @proposal_stats, colors: ["#8B5CF6", "#EC4899", "#F59E0B"], donut: true, legend: true, height: "320px" %>
       </div>
     </div>
-
-    <div class="rounded-lg border bg-base-100 shadow-sm">
-      <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-xl font-semibold leading-none tracking-tight">Recent Emails</h3>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="card bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-800">Recent Leads</h3>
       </div>
-      <div class="p-6 pt-0">
-        <div class="space-y-3">
-          <% @emails.each do |email| %>
-            <div class="flex items-center justify-between p-3 bg-base-100 rounded-lg hover:bg-base-200 transition-colors duration-200">
-              <div class="flex items-center gap-3">
-                <i data-lucide="mail" class="lucide lucide-mail h-5 w-5 text-primary"></i>
-                <div>
-                  <div class="font-medium text-base"><%= email.subject %></div>
-                  <div class="text-sm text-base-content/60"><%= email.sent_at&.strftime("%B %d, %Y %I:%M %p") || 'N/A' %></div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="badge badge-primary bg-primary/10 text-primary border-primary/20 font-semibold px-3 py-1 rounded-full capitalize text-sm">
-                  <%= email.status %>
-                </span>
-                <div class="dropdown dropdown-end">
-                  <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                    <i data-lucide="ellipsis" class="lucide lucide-ellipsis h-4 w-4"></i>
-                  </div>
-                  <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box w-52 p-2 shadow-md border border-base-200">
-                    <li><a>Details</a></li>
-                    <li><a>Reply</a></li>
-                    <li><a>Delete</a></li>
-                  </ul>
-                </div>
+      <div class="divide-y divide-gray-100">
+        <% @leads.each do |lead| %>
+          <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="users" class="h-5 w-5 text-blue-600"></i>
+              <div>
+                <p class="font-medium text-gray-800"><%= lead.company&.name || 'N/A' %></p>
+                <p class="text-sm text-gray-500"><%= lead.created_at.strftime("%B %d, %Y %I:%M %p") %></p>
               </div>
             </div>
-          <% end %>
-        </div>
+            <span class="badge bg-blue-50 text-blue-600 border-blue-100 px-3 py-1 rounded-full text-sm capitalize font-medium">
+              <%= lead.status %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-800">Recent Proposals</h3>
+      </div>
+      <div class="divide-y divide-gray-100">
+        <% @proposals.each do |proposal| %>
+          <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="file-text" class="h-5 w-5 text-emerald-600"></i>
+              <div>
+                <p class="font-medium text-gray-800"><%= proposal.title %></p>
+                <p class="text-sm text-gray-500"><%= proposal.created_at.strftime("%B %d, %Y %I:%M %p") %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-800">Recent Emails</h3>
+      </div>
+      <div class="divide-y divide-gray-100">
+        <% @emails.each do |email| %>
+          <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="mail" class="h-5 w-5 text-amber-600"></i>
+              <div>
+                <p class="font-medium text-gray-800"><%= email.subject %></p>
+                <p class="text-sm text-gray-500"><%= email.sent_at&.strftime("%B %d, %Y %I:%M %p") || 'N/A' %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>

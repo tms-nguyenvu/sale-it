@@ -43,6 +43,11 @@
             </span>
           </div>
         <% end %>
+        <div class="tooltip" data-tip="Outcome: <%= lead.outcome.humanize %>">
+          <span class="badge badge-outline badge-sm <%= lead.outcome == 'won' ? 'badge-success' : lead.outcome == 'lost' ? 'badge-error' : 'badge-info' %>">
+            <%= lead.outcome.humanize %>
+          </span>
+        </div>
         <% lead.tag_list.each do |tag| %>
           <div class="tooltip" data-tip="Tag: <%= tag %>">
             <span class="badge badge-outline badge-sm badge-accent"><%= tag %></span>
