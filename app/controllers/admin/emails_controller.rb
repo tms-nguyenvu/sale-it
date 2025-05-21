@@ -55,6 +55,7 @@ class Admin::EmailsController < ApplicationController
           sent_at: Time.current,
           lead_id: lead.id
         )
+        authorize! :update, lead
         lead.update(status: "sent")
         GenerateLeadSuggestionJob.perform_later(lead.id)
         Rails.logger.info("Updated Lead ID #{lead.id} to status: email_sent")

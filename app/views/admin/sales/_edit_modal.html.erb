@@ -59,10 +59,23 @@
                     ["Replied", "replied"],
                     ["Demo", "demo"],
                     ["Negotiation", "negotiate"],
+                    ["Close", "closed"],
                   ],
                   lead.status
                 ),
                 {},
+                class: "select select-bordered w-full"
+              %>
+          </fieldset>
+
+          <fieldset class="fieldset space-y-2">
+              <legend class="fieldset-legend py-0">Outcome</legend>
+              <%= f.select :outcome,
+                options_for_select(
+                  Lead.outcomes.keys.map { |o| [o.humanize, o] },
+                  lead.outcome
+                ),
+                { prompt: "Select outcome" },
                 class: "select select-bordered w-full"
               %>
           </fieldset>
@@ -91,8 +104,7 @@
             <legend class="fieldset-legend py-0">Start Date</legend>
             <%= f.date_field :start_date,
               value: lead.start_date,
-              class: "input input-bordered w-full",
-              required: true
+              class: "input input-bordered w-full"
             %>
           </fieldset>
 

@@ -9,19 +9,20 @@ class Admin::SalesController < ApplicationController
     @companies = Company.includes(:contacts)
                         .where("potential_score >= ?", POTENTIAL_SCORE_THRESHOLD)
                         .order(potential_score: :desc)
-    @new_leads = Lead.where(status: 0)
-    @email_sent_leads = Lead.where(status: 1)
-    @email_replied_leads = Lead.where(status: 2)
-    @demo_leads = Lead.where(status: 3)
-    @negotiate_leads = Lead.where(status: 4)
+    @new_leads = Lead.where(status: :new_lead)
+    @email_sent_leads = Lead.where(status: :sent)
+    @email_replied_leads = Lead.where(status: :replied)
+    @demo_leads = Lead.where(status: :demo)
+    @negotiate_and_closed_leads = Lead.where(status: [ :negotiate, :closed ])
 
     @lead_suggestions = Lead.where.not(suggestions: nil)
   end
 
   def create
-    leads = Lead.new(sale_params)
-    if leads.save
-      GenerateLeadSuggestionJob.perform_later(leads.id)
+    lead = Lead.new(sale_params)
+    authorize! :update, lead
+    if lead.save
+      GenerateLeadSuggestionJob.perform_later(lead.id)
       redirect_to admin_sales_path, notice: "Sale was successfully created."
     else
       redirect_to admin_sales_path, alert: "Failed to create sale."
@@ -29,6 +30,7 @@ class Admin::SalesController < ApplicationController
   end
 
   def update
+    authorize! :update, @lead
     if @lead.update(sale_params)
       GenerateLeadSuggestionJob.perform_later(@lead.id)
       redirect_to admin_sales_path, notice: "Sale was successfully updated."
@@ -53,9 +55,8 @@ class Admin::SalesController < ApplicationController
       :project_name,
       :status,
       :priority,
-      :start_date,
-      :end_date,
-      :tag_list
+      :tag_list,
+      :outcome
     )
   end
 end

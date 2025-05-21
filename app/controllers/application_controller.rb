@@ -33,7 +33,14 @@ class ApplicationController < ActionController::Base
 
   def handle_access_denied(exception)
     respond_to do |format|
-      format.html { redirect_to root_url, alert: exception.message }
+      format.html do
+        flash[:alert] = exception.message
+        if request.referer
+          redirect_back(fallback_location: admin_dashboard_path)
+        else
+          redirect_to admin_dashboard_path
+        end
+      end
       format.json { render json: { error: exception.message }, status: :forbidden }
     end
   end
