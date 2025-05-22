@@ -85,10 +85,9 @@ You may need to cover:
 - Email đã được gửi từ hệ thống.
 
 **Test Steps:**
-1. Truy cập màn hình “Theo dõi chiến dịch”.
-2. Chọn email từ danh sách chiến dịch.
-3. Quan sát các chỉ số: mở, click, trả lời.
-4. Xem gợi ý follow-up nếu chưa có phản hồi.
+1. Truy cập màn hình “Email Outreach”.
+2. Quan sát các chỉ số: mở, click, trả lời.
+3. Xem gợi ý follow-up nếu chưa có phản hồi.
 
 **Expected Result:**
 - Thống kê đúng số lượt mở, click, trả lời.
