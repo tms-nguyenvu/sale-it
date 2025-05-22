@@ -29,8 +29,8 @@ You may need to cover:
 
 **Test Steps:**
 1. Đăng nhập vào hệ thống.
-2. Truy cập module “Find Lead Generation”.
-3. Click vào nút “Crawl”.
+2. Truy cập module “Crawl Data Sources”.
+3. Click vào nút “Add Source”.
 4. Hệ thống tự động crawl và AI phân tích dữ liệu từ các nguồn.
 5. Hệ thống hiển thị thông tin như ngành nghề, quy mô, tình trạng tuyển dụng...
 
@@ -51,6 +51,7 @@ You may need to cover:
 2. Hệ thống trích xuất thông tin từ profile công khai.
 3. Xác định tên, chức vụ, email của decision-makers.
 4. Hiển thị danh sách lead.
+5. Thêm lead được chọn.
 
 **Expected Result:**
 - Hiển thị đúng tên, chức vụ, email của CTO, CEO, Product Manager…
@@ -65,9 +66,9 @@ You may need to cover:
 - Có ít nhất một công ty được chọn trong danh sách khách hàng tiềm năng.
 
 **Test Steps:**
-1. Truy cập trang “Email cá nhân hóa”.
+1. Truy cập trang “Email Outreach”.
 2. Chọn công ty cụ thể.
-3. Chọn tone văn phong (ví dụ: chuyên nghiệp).
+3. Chọn tone văn phong (ví dụ: profesional).
 4. Click “Optimize Email AI”.
 5. Click “Send email”.
 
