@@ -8,7 +8,7 @@ class Email < ApplicationRecord
   belongs_to :lead, optional: true
   has_many :email_trackings, dependent: :destroy
   has_many :email_replies, dependent: :destroy
-  has_one :email_suggestion, dependent: :destroy
+  has_many :email_suggestions, dependent: :destroy
 
 
   validates :subject, :body, presence: true

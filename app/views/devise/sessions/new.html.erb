@@ -13,7 +13,7 @@
        </div>
 
        <h2 class="text-3xl font-bold mb-4">Welcome back 👋</h2>
-       <p class="text-sm text-gray-600 mb-6">Vui lòng nhập thông tin đăng nhập của bạn.</p>
+       <p class="text-sm text-gray-600 mb-6">Please enter your login information.</p>
 
        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
          <div class="space-y-5">
@@ -29,7 +29,7 @@
                <%= f.email_field :email, placeholder: "mail@site.com", required: true,
                class: "w-full bg-transparent focus:outline-none" %>
              </label>
-             <p class="validator-hint hidden text-sm">Nhập địa chỉ email hợp lệ.</p>
+             <p class="validator-hint hidden text-sm">Enter a valid email address.</p>
            </div>
 
        <!-- Password -->
@@ -44,18 +44,18 @@
                </svg>
                <%= f.password_field :password, placeholder: "Password", required: true, minlength: 8,
                pattern: "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}",
-               title: "Phải nhiều hơn 6 ký tự, bao gồm số, chữ thường, chữ hoa.",
+               title: "Must be more than 6 characters, including numbers, lowercase letters, uppercase letters.",
                class: "w-full bg-transparent focus:outline-none" %>
              </label>
              <p class="validator-hint hidden text-sm">
-               Phải có nhiều hơn 6 ký tự, bao gồm:
-               <br/>- Ít nhất một số.
-               <br/>- Ít nhất một chữ cái thường.
-               <br/>- Ít nhất một chữ cái viết hoa.
+                Must be more than 6 characters, including:
+               <br/>- At least some.
+               <br/>- At least one lowercase letter.
+               <br/>- At least one uppercase letter.
              </p>
            </div>
 
-         <button class="btn bg-primary text-white w-full rounded">Đăng nhập</button>
+         <button class="btn btn-neutral w-full">Login</button>
 
          </div>
        <% end %>
