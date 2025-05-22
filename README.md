@@ -69,8 +69,8 @@ You may need to cover:
 1. Truy cập trang “Email Outreach”.
 2. Chọn công ty cụ thể.
 3. Chọn tone văn phong (ví dụ: profesional).
-4. Click “Optimize Email AI”.
-5. Click “Send email”.
+4. Click “Optimal AI”.
+5. Click “Send now”.
 
 **Expected Result:**
 - Email được sinh tự động phù hợp ngành nghề, người nhận.
