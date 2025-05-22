@@ -1,0 +1,29 @@
+<div class="space-y-6 mt-4">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+    <%= render 'admin/sales/kanban_column',
+        status: 'new_lead',
+        title: 'New Lead',
+        leads: @new_leads,
+        badge_class: 'badge-primary' %>
+    <%= render 'admin/sales/kanban_column',
+        status: 'sent',
+        title: 'Email Sent',
+        leads: @email_sent_leads,
+        badge_class: 'badge-info' %>
+    <%= render 'admin/sales/kanban_column',
+        status: 'replied',
+        title: 'Email Replied',
+        leads: @email_replied_leads,
+        badge_class: 'badge-success' %>
+    <%= render 'admin/sales/kanban_column',
+        status: 'demo',
+        title: 'Demo',
+        leads: @demo_leads,
+        badge_class: 'badge-warning' %>
+    <%= render 'admin/sales/kanban_column',
+        status: 'negotiate',
+        title: 'Negotiation/Closed',
+        leads: @negotiate_and_closed_leads,
+        badge_class: 'badge-error' %>
+  </div>
+</div>

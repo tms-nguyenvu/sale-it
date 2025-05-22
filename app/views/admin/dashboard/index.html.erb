@@ -1,0 +1,127 @@
+<div class="space-y-8 p-8 bg-gray-50 rounded-2xl shadow-sm">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800">Analytics Dashboard</h1>
+      <p class="text-gray-500 mt-2">Overview of sales activities and team performance</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+          <i data-lucide="users" class="h-6 w-6 text-blue-600"></i>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500">Total Leads</p>
+          <h3 class="text-2xl font-bold text-blue-600"><%= @total_leads %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center">
+          <i data-lucide="file-text" class="h-6 w-6 text-emerald-600"></i>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500">Total Proposals</p>
+          <h3 class="text-2xl font-bold text-emerald-600"><%= @total_proposals %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center">
+          <i data-lucide="briefcase" class="h-6 w-6 text-purple-600"></i>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500">Total Companies</p>
+          <h3 class="text-2xl font-bold text-purple-600"><%= @total_companies %></h3>
+        </div>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center">
+          <i data-lucide="mail" class="h-6 w-6 text-amber-600"></i>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500">Emails Sent</p>
+          <h3 class="text-2xl font-bold text-amber-600"><%= @total_sent_emails %></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Lead Distribution</h3>
+      <div class="relative h-80">
+        <%= pie_chart @lead_stats, colors: ["#10B981", "#3B82F6", "#F59E0B", "#EF4444"], donut: true, legend: true, height: "320px" %>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Proposal Status</h3>
+      <div class="relative h-80">
+        <%= pie_chart @proposal_stats, colors: ["#8B5CF6", "#EC4899", "#F59E0B"], donut: true, legend: true, height: "320px" %>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="card bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-800">Recent Leads</h3>
+      </div>
+      <div class="divide-y divide-gray-100">
+        <% @leads.each do |lead| %>
+          <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="users" class="h-5 w-5 text-blue-600"></i>
+              <div>
+                <p class="font-medium text-gray-800"><%= lead.company&.name || 'N/A' %></p>
+                <p class="text-sm text-gray-500"><%= lead.created_at.strftime("%B %d, %Y %I:%M %p") %></p>
+              </div>
+            </div>
+            <span class="badge bg-blue-50 text-blue-600 border-blue-100 px-3 py-1 rounded-full text-sm capitalize font-medium">
+              <%= lead.status %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-800">Recent Proposals</h3>
+      </div>
+      <div class="divide-y divide-gray-100">
+        <% @proposals.each do |proposal| %>
+          <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="file-text" class="h-5 w-5 text-emerald-600"></i>
+              <div>
+                <p class="font-medium text-gray-800"><%= proposal.title %></p>
+                <p class="text-sm text-gray-500"><%= proposal.created_at.strftime("%B %d, %Y %I:%M %p") %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="card bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-gray-800">Recent Emails</h3>
+      </div>
+      <div class="divide-y divide-gray-100">
+        <% @emails.each do |email| %>
+          <div class="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="mail" class="h-5 w-5 text-amber-600"></i>
+              <div>
+                <p class="font-medium text-gray-800"><%= email.subject %></p>
+                <p class="text-sm text-gray-500"><%= email.sent_at&.strftime("%B %d, %Y %I:%M %p") || 'N/A' %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

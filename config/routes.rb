@@ -6,11 +6,15 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :admin, path: "/" do
-    resources :companies
+    # Companies
+    resources :companies do
+      resources :contacts, only: %i[index]
+    end
 
     # Crawl sources
     resources :crawl_sources, only: %i[index create destroy update]
-    resources :pending_crawl_sources, only: %i[index update]
+    resources :list_sources, only: %i[index update]
+    resources :crawl_data_temporaries, only: %i[update]
     resources :history_crawl_sources, only: %i[index]
 
     get "dashboard", to: "dashboard#index"
@@ -22,7 +26,22 @@ Rails.application.routes.draw do
 
     # Email outreach
     resources :emails
-    resources :email_optimizations, only: [ :create ]
+    resources :email_optimizations, only: %i[create]
+    resources :email_replies, only: %i[index create]
+    resources :email_trackings, only: %i[index create]
+    resources :email_analytics, only: %i[index]
+
+    # Sale pipeline
+    resources :sales, only: %i[index create update]
+    resources :leads, only: %i[index create update]
+
+    # Proposal
+    resources :proposals
+    resources :proposal_optimizations, only: %i[create]
+    resources :proposal_templates, only: %i[index new create update destroy]
+
+    # Team management
+    resources :team_managements, only: %i[index]
   end
 
   root "admin/dashboard#index"

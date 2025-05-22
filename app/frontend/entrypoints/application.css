@@ -46,3 +46,32 @@ body {
   transition: margin-left var(--sidebar-transition-duration) ease-in-out;
   margin-left: 0;
 }
+
+
+.pagy {
+  @apply flex items-center space-x-2 font-medium text-sm text-gray-600;
+
+  a:not(.gap) {
+    @apply flex justify-center items-center size-10 rounded-full px-4 py-2 bg-white border border-primary/20 shadow-sm transition-all duration-200;
+
+    &:hover {
+      @apply bg-primary/10 border-primary/50 text-primary;
+    }
+
+    &:not([href]) {
+      @apply text-gray-400 bg-gray-100 border-gray-100 cursor-not-allowed;
+    }
+
+    &.current {
+      @apply text-white bg-primary border-primary;
+    }
+  }
+
+  label {
+    @apply inline-flex items-center whitespace-nowrap bg-white border border-primary/20 rounded-full px-4 py-2 shadow-sm;
+
+    input {
+      @apply bg-transparent border-none rounded-md focus:ring-2 focus:ring-primary/50 focus:outline-none;
+    }
+  }
+}

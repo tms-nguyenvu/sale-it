@@ -1,0 +1,162 @@
+<div class="lg:col-span-2">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-2xl font-semibold leading-none tracking-tight">Create proposals automatically</h3>
+      <p class="text-sm text-gray-600">Based on customer requirements, AI fills in available proposal form</p>
+    </div>
+
+    <div class="p-6 pt-0 space-y-4">
+      <%= form_with url: admin_proposals_path,
+                    method: :post,
+                    scope: :proposal,
+                    class: "pt-0 space-y-4",
+                    id: "proposal-form",
+                    data: { turbo: false } do |f| %>
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Customer</legend>
+            <% if @company.present? %>
+              <select name="proposal[company_name]" class="select w-full" id="company_name_select">
+                <% lead = @leads.find { |l| l.company_id == @company.id } %>
+                <option value="<%= @company.name %>" data-company-id="<%= @company.id %>">
+                  <%= @company.name %> (<%= @company.industry %>) - Lead ID: <%= lead&.id %> - <%= lead&.status %>
+                </option>
+              </select>
+              <%= hidden_field_tag 'proposal[company_id]', @company.id, id: 'company_id_field' %>
+            <% elsif @companies.present? %>
+              <select name="proposal[company_name]" class="select w-full" id="company_name_select">
+                <option value="" disabled selected>Select a company</option>
+                <% @companies.each do |company| %>
+                  <% lead = @leads.find { |l| l.company_id == company.id } %>
+                  <option value="<%= company.name %>" data-company-id="<%= company.id %>">
+                    <%= company.name %> (<%= company.industry %>) - Lead ID: <%= lead&.id %> - <%= lead&.status %>
+                  </option>
+                <% end %>
+              </select>
+              <%= hidden_field_tag 'proposal[company_id]', '', id: 'company_id_field' %>
+            <% else %>
+              <select class="select w-full" disabled>
+                <option>No companies found</option>
+              </select>
+            <% end %>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Title proposal</legend>
+            <%= f.text_field :title, class: "input w-full", placeholder: "Enter title proposal", required: true %>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Template proposal</legend>
+            <% if @template_proposals.present? %>
+              <select name="proposal[template_sections][]" class="select w-full" id="template_proposal_select">
+                <option value="" disabled selected>Select a template</option>
+                <% @template_proposals.each do |template| %>
+                  <option value="<%= template.template_sections.map { |section| { title: section.title, content: section.content } }.to_json %>" data-template-id="<%= template.id %>">
+                    <%= template.name %>
+                  </option>
+                <% end %>
+              </select>
+              <%= f.hidden_field :template_proposal_id, id: "template_proposal_id_field" %>
+            <% else %>
+              <select class="select w-full" disabled>
+                <option>No template found</option>
+              </select>
+            <% end %>
+          </fieldset>
+        </div>
+
+        <div>
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend text-sm font-medium">Customer requirements</legend>
+            <%= f.text_area :requirement, class: "textarea w-full h-24", placeholder: "Enter customer requirements", required: true, id: "proposal_requirements" %>
+          </fieldset>
+        </div>
+
+        <div>
+          <div class="flex items-center">
+            <fieldset class="fieldset">
+              <legend class="fieldset-legend text-sm font-medium">Sections in the proposal</legend>
+            </fieldset>
+          </div>
+
+          <div class="space-y-2 border rounded-lg p-3">
+            <% sections = [
+              "Company introduction",
+              "Understand the customer's problem",
+              "Proposed solution",
+              "Main features",
+              "Similar case studies",
+              "Quote & Timeline",
+              "Implementation team",
+              "Workflow",
+              "Terms & Conditions"
+            ] %>
+            <% sections.each do |section| %>
+              <div class="flex items-center space-x-2">
+                <%= check_box_tag "proposal[sections][]", section, true, class: "checkbox checkbox-neutral" %>
+                <label class="text-sm"><%= section %></label>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="flex gap-2 justify-end">
+          <button
+            data-controller="optimize"
+            data-action="click->optimize#submit"
+            data-optimize-url-value="<%= admin_proposal_optimizations_path %>"
+            data-optimize-target="button"
+            type="button"
+            class="btn btn-sm btn-outline btn-neutral"
+          >
+            <i data-lucide="sparkles" class="size-4"></i> Optimal AI
+          </button>
+          <button type="submit" class="btn btn-sm btn-neutral">Create Proposal</button>
+        </div>
+        <%= hidden_field_tag 'proposal[customized_proposal]', '', id: 'customized_proposal_field' %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<input type="checkbox" id="proposal-preview-modal" class="modal-toggle" />
+<div class="modal" id="proposal-modal-container" role="dialog">
+  <div class="modal-box max-w-7xl w-full max-h-[85vh] overflow-y-auto bg-white rounded-xl shadow-2xl">
+    <h3 class="font-bold text-2xl mb-6 text-center">Proposal Preview</h3>
+    <div id="proposal-preview-content" class="space-y-6 prose prose-sm max-w-none">
+      <p class="text-gray-500 italic">Loading proposal...</p>
+    </div>
+    <div id="proposal-edit-form" class="space-y-6 mt-6 hidden"></div>
+    <div class="modal-action mt-8 flex gap-4 justify-end">
+      <div id="proposal-modal-buttons" class="flex gap-3">
+        <div class="dropdown dropdown-top">
+          <label tabindex="0" class="btn btn-sm btn-outline btn-neutral px-6">
+            <i data-lucide="menu" class="size-4"></i> Actions
+          </label>
+          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+            <li>
+              <a id="edit-proposal-btn" class="flex items-center gap-2">
+                <i data-lucide="edit" class="size-4"></i> Edit Proposal
+              </a>
+            </li>
+            <li>
+              <a id="export-pdf-btn" class="flex items-center gap-2">
+                <i data-lucide="file-type-2" class="size-4"></i> Export PDF
+              </a>
+            </li>
+          </ul>
+        </div>
+        <label for="proposal-preview-modal" class="btn btn-sm btn-neutral px-6">Close</label>
+      </div>
+      <div id="proposal-edit-buttons" class="flex gap-3">
+        <button type="button" id="cancel-edit-btn" class="btn btn-sm btn-outline btn-neutral px-6">Cancel</button>
+        <button type="button" id="save-proposal-btn" class="btn btn-sm btn-primary px-6">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>

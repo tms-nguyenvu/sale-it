@@ -1,5 +1,14 @@
 <div class="lg:col-span-2">
   <%= turbo_frame_tag "emails_turbo_frame" do %>
+    <% if flash.now[:notice] %>
+    <div class="mb-4 p-4 text-sm text-green-800 bg-green-100 rounded-lg border border-green-200">
+      <%= flash.now[:notice] %>
+    </div>
+    <% elsif flash.now[:alert] %>
+      <div class="mb-4 p-4 text-sm text-red-800 bg-red-100 rounded-lg border border-red-200">
+        <%= flash.now[:alert] %>
+      </div>
+    <% end %>
     <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
       <div class="flex flex-col space-y-1.5 p-6">
         <h3 class="text-2xl font-semibold leading-none tracking-tight">Compose personalized emails</h3>
@@ -59,7 +68,8 @@
                         <%= link_to tone,
                               new_admin_email_path(contact_id: @contact.id, tone: tone.downcase),
                               data: { turbo_frame: "emails_turbo_frame" },
-                              class: "#{'active' if params[:tone] == tone.downcase}" %>
+                              class: "block px-4 py-2 rounded-md hover:bg-gray-100 
+                              #{'bg-gray-200 text-black font-semibold' if params[:tone]&.downcase == tone.downcase}" %>
                       </li>
                     <% end %>
                   </ul>
@@ -80,6 +90,8 @@
               <div class="text-sm text-gray-400 italic">Please select a receiver to choose tone</div>
             <% end %>
           </div>
+        <%= hidden_field_tag :tone, params[:tone].presence || "professional" %>
+
 
           <%= f.text_area :body, class: "textarea w-full", rows: 14, required: true,
                 value: @contact.present? ? @emails[:body] : "",

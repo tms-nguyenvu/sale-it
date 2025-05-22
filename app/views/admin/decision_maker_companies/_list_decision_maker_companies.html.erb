@@ -2,7 +2,7 @@
 focus-visible:ring-offset-2 space-y-4">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <% @contacts.each do |contact| %>
-      <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+      <div class="card bg-white border rounded-xl shadow-lg">
         <div class="flex flex-col space-y-1.5 p-6 pb-2">
           <div class="flex justify-between items-start">
             <div>
@@ -27,14 +27,17 @@ focus-visible:ring-offset-2 space-y-4">
           </div>
         </div>
         <div class="flex items-center p-6 pt-0">
-          <div class="flex gap-4 w-full justify-between">
-            <button class="btn btn-outline flex-1">Detail</button>
+          <div class="flex gap-2 w-full justify-end">
+            <button class="btn btn-outline btn-sm">Detail</button>
             <%= link_to "Compose emails", new_admin_email_path(contact_id: contact.id),
             data: { turbo: false }, class: "btn btn-neutral
-            flex-1 text-center" %>
+            btn-sm text-center" %>
           </div>
         </div>
       </div>
     <% end %>
   </div>
+    <div class="flex justify-center mt-4">
+      <%== pagy_nav(@pagy) %>
+    </div>
 </div>

@@ -13,14 +13,11 @@ class ApproveCrawlSourceJob < ApplicationJob
       company_data = data["company"]
       contact_data = data["contact"]
       score_lead_data = data["score_lead"]
-
-      puts "data: #{data.inspect}"
       name = company_data["name"].to_s.strip
       next if name.blank?
 
       normalized_name = normalize_company_name(name)
       next if existing_company_names.include?(normalized_name)
-
       begin
         company = Company.create!(
           name: name,

@@ -17,6 +17,7 @@ gem "jbuilder"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
+
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
@@ -87,3 +88,14 @@ gem "sidekiq-scheduler", "~> 5.0", ">= 5.0.6"
 gem "redis", "5.0.6"
 
 gem "ransack"
+
+gem "acts-as-taggable-on"
+
+gem "wicked_pdf"
+gem "wkhtmltopdf-binary"
+
+
+gem "chartkick"
+gem "groupdate"
+
+gem "pagy", "~> 9.3", ">= 9.3.4"

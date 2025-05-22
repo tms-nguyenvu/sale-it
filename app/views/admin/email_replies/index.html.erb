@@ -1,0 +1,146 @@
+<div class="space-y-6">
+  <div class="mt-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Email Replies</h1>
+        <p class="text-gray-600">Write personalized responses to your customers' emails</p>
+      </div>
+    </div>
+  </div>
+
+  <%= render partial: "shared/tabs", locals: {
+    tabs: [
+      { label: "Compose emails", path: admin_emails_path },
+      { label: "Email replies", path: admin_email_replies_path },
+      { label: "Effective analysis", path: admin_email_analytics_path }
+    ]
+  } %>
+
+  <div class="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <%= search_form_for @q, url: admin_email_replies_path, method: :get, class: "flex items-center gap-4" do |f| %>
+      <label class="input flex items-center gap-2 border rounded px-3 py-2 w-full max-w-md bg-white shadow-sm">
+        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+        <%= f.text_field :contact_email_cont, placeholder: "Search by recipient email...", class: "w-full border-none outline-none focus:ring-0" %>
+      </label>
+      <%= f.submit "Search", class: "btn btn-neutral" %>
+    <% end %>
+  </div>
+
+  <% if @emails.present? %>
+    <div class="flex flex-col gap-6 mt-6">
+      <% @emails.each do |email| %>
+        <div class="rounded-xl border  bg-white">
+          <div class="p-4 space-y-2">
+            <div class="flex justify-between items-center">
+              <h2 class="text-lg font-semibold text-gray-900 truncate max-w-7xl">
+                <%= email.subject.presence || "No Subject" %>
+              </h2>
+              <span class="text-xs text-gray-400">
+                <%= email.sent_at&.strftime("%b %d, %Y") || "Pending" %>
+              </span>
+            </div>
+
+            <div class="text-sm text-gray-600 space-y-2">
+              <div class="flex items-center gap-2">
+                <i data-lucide="folder" class="size-5 text-primary"></i>
+                <span class="badge badge-success text-white text-xs font-medium px-2 py-0.5">
+                  Lead ID <%= email.lead_id %> (<%= email.lead.status&.humanize %>)
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="user" class="size-5 text-primary"></i>
+                <span>Sent by: <%= email.user.email %> (<%= email.user.roles.first&.name&.humanize || "N/A" %>)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="mail" class="size-5 text-primary"></i>
+                <span>To: <%= email.contact.email %></span>
+              </div>
+              <% suggestion = @email_suggestions.find { |s| s.email_id == email.id } %>
+              <% if suggestion %>
+                <div class="flex items-start gap-2 mt-2">
+                  <i data-lucide="lightbulb" class="size-5 text-yellow-500"></i>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-700 break-words whitespace-normal">
+                      Action: <%= suggestion.suggested_action %>
+                    </p>
+                    <p class="text-sm text-gray-500 break-words whitespace-normal">
+                      <%= suggestion.reasoning %>
+                    </p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="flex justify-end">
+              <button class="btn btn-neutral btn-sm" onclick="document.getElementById('modal_<%= email.id %>').showModal()">
+                <i data-lucide="list-collapse" class="size-5"></i>
+                Details
+              </button>
+            </div>
+
+            <dialog id="modal_<%= email.id %>" class="modal !mt-0">
+              <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+              </form>
+
+              <div class="modal-box relative max-w-lg sm:max-w-[700px] h-[90%] bg-white overflow-y-auto">
+                <div class="space-y-6">
+                  <div class="text-center sm:text-left">
+                    <h2 class="text-xl font-bold">Email Detail</h2>
+                    <p class="text-sm text-gray-500"><%= email.subject.presence || "No Subject" %></p>
+                  </div>
+
+                  <div class="text-sm space-y-2 text-gray-600">
+                    <p><strong>From:</strong> <%= email.user.email %> (<%= email.user.roles.first&.name&.humanize || "N/A" %>)</p>
+                    <p><strong>To:</strong> <%= email.contact.email %></p>
+                    <p><strong>Sent at:</strong> <%= email.sent_at&.strftime("%B %d, %Y %I:%M %p") || "Pending" %></p>
+                  </div>
+
+                  <div class="border rounded-lg p-4 bg-gray-50 text-sm whitespace-pre-line">
+                    <%= email.body %>
+                  </div>
+
+                  <div class="pt-4 border-t">
+                    <h3 class="text-md font-semibold mb-2">Enter email reply</h3>
+                    <%= form_with url: admin_email_replies_path, method: :post, local: true do |form| %>
+                      <%= form.hidden_field :email_id, value: email.id %>
+                      <div class="space-y-2">
+                        <%= form.text_area :body, rows: 6, placeholder: "Write your reply here...", class: "textarea w-full" %>
+                        <button type="submit" class="btn btn-sm btn-neutral">
+                          Enter reply
+                          <i data-lucide="forward" class="size-4"></i>
+                        </button>
+                      </div>
+                    <% end %>
+                  </div>
+
+                  <% if email.email_replies.any? %>
+                    <div class="mt-4 border-t pt-4">
+                      <h3 class="text-md font-semibold mb-2">Replies</h3>
+                      <div class="space-y-3">
+                        <% email.email_replies.order(created_at: :desc).each do |reply| %>
+                          <div class="bg-gray-100 rounded p-3 text-sm">
+                            <div class="flex justify-between items-center text-gray-600 mb-1">
+                              <span><strong>Reply from:</strong> <%= reply.contact.email %></span>
+                              <span class="text-xs"><%= reply.received_at.strftime("%b %d, %Y %I:%M %p") %></span>
+                            </div>
+                            <div class="whitespace-pre-line text-gray-800"><%= reply.body %></div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </dialog>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-center text-gray-500 italic mt-6">No emails found.</p>
+  <% end %>
+    <div class="flex justify-center mt-4">
+      <%== pagy_nav(@pagy) %>
+    </div>
+</div>

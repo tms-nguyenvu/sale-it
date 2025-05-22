@@ -28,7 +28,7 @@
 
   <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
     <div class="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
-      <h3 class="tracking-tight text-sm font-medium">Pending Approval</h3>
+      <h3 class="tracking-tight text-sm font-medium">Unapproved quantity</h3>
       <i data-lucide="clock" class="lucide lucide-clock h-4 w-4 text-gray-600"></i>
     </div>
     <div class="p-6 pt-0">
@@ -67,7 +67,6 @@
         <th>Source Type</th>
         <th>Description</th>
         <th>Status</th>
-        <th>Approve</th>
         <th>Data Collected</th>
         <th></th>
       </tr>
@@ -94,14 +93,6 @@
               <%= source.status.humanize %>
             </span>
           </td>
-          <td>
-            <span class="badge rounded-full <%= source.approval_status == 'approved' ? 'badge-success' :
-                                                source.approval_status == 'pending' ? 'badge-warning' :
-                                                        (source.approval_status == 'rejected' ? 'badge-error' : '') %>">
-              <%= source.approval_status.humanize %>
-            </span>
-          </td>
-
           <td>
             <%= source.companies.count %> companies
           </td>
@@ -138,4 +129,7 @@
       <% end %>
     </tbody>
   </table>
+  <div class="p-4 flex justify-center">
+    <%== pagy_nav(@pagy) %>
+  </div>
 </div>

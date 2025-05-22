@@ -1,0 +1,11 @@
+<div data-controller="drag" class="bg-gray-100 rounded-lg p-4 shadow-md">
+  <div data-drag-target="list" class="kanban-column space-y-3" data-status="<%= status %>">
+    <div class="flex justify-between items-center mb-4">
+      <div class="text-lg font-semibold text-gray-800"><%= title %></div>
+      <div class="badge <%= badge_class %> badge-outline"><%= leads.count %></div>
+    </div>
+    <% leads.each do |lead| %>
+      <%= render 'admin/sales/lead_item', lead: lead %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="space-y-6">
+  <div class="space-y-6 mt-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Proposals & Quotations</h1>
+        <p class="text-gray-600">Generate documents & quotes fast with AI</p>
+      </div>
+      <button class="btn bg-black text-white border-black" onclick="new_template_modal.showModal()">
+        <i data-lucide="plus" class="size-5"></i>
+        Create template
+      </button>
+      <%= render partial: "admin/proposal_templates/form_modal", locals: {
+        modal_id: "new_template_modal",
+        title: "Create Proposal Template",
+        url: admin_proposal_templates_path,
+        method: :post,
+        submit_text: "Create Template"
+      } %>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <%= render partial: "shared/tabs", locals: {
+      tabs: [
+        { label: "Create documents", path: admin_proposals_path },
+        { label: "Sample available", path: admin_proposal_templates_path },
+      ]
+    } %>
+  </div>
+
+  <%= render 'admin/proposal_templates/list_proposal_templates' %>
+</div>

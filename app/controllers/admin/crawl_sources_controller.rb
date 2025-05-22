@@ -6,7 +6,7 @@ class Admin::CrawlSourcesController < ApplicationController
     INTERVAL_HOURS = 2.hour
 
     def index
-      @crawl_sources = CrawlSource.all
+      @pagy, @crawl_sources = pagy(CrawlSource.all)
       @active_sources = CrawlSource.active_sources
       @paused_sources = CrawlSource.paused_sources
       @pending_approval = CrawlSource.pending_approval
@@ -16,18 +16,18 @@ class Admin::CrawlSourcesController < ApplicationController
 
     def create
       begin
-        if CrawlSource.find_by(source_url: params[:source_url])
-          raise "Source URL already exists"
-        end
-
         scheduled = params[:scheduled] == "1"
-        Crawler::CrawlSourceService.new(params[:source_url], params[:source_type], scheduled).process
-        redirect_to admin_pending_crawl_sources_path, notice: "Source created successfully"
+        Crawler::CrawlSourceService.new(
+          params[:source_url],
+          params[:source_type],
+          scheduled,
+          params[:description]
+        ).process
+        redirect_to admin_list_sources_path, notice: "Source created successfully"
       rescue StandardError => e
-        redirect_to admin_pending_crawl_sources_path, alert: e.message
+        redirect_to admin_list_sources_path, alert: e.message
       end
     end
-
 
     def update
       @crawl_source = CrawlSource.find(params[:id])
@@ -50,6 +50,6 @@ class Admin::CrawlSourcesController < ApplicationController
     end
 
     def crawl_source_params
-      params.require(:crawl_source).permit(:source_url, :source_type, :status)
+      params.require(:crawl_source).permit(:source_url, :source_type, :status, :description)
     end
 end

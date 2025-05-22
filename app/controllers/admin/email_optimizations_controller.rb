@@ -3,13 +3,25 @@ class Admin::EmailOptimizationsController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    optimized = EmailService::EmailOptimizeService.new(
-      params[:subject],
-      params[:body],
-      params[:tone]
-    ).optimize_email
+    begin
+      optimized = EmailService::EmailOptimizeService.new(
+        params[:subject],
+        params[:body],
+        params[:tone]
+      ).optimize_email
 
-    @emails = optimized
+      if optimized.present? && optimized[:subject].present? && optimized[:body].present?
+        @emails = optimized
+        flash.now[:notice] = "Optimized email generated successfully"
+      else
+        @emails = { subject: params[:subject], body: params[:body] }
+        flash.now[:alert] = "Optimization failed. Please try again or check your input."
+      end
+    rescue => e
+      @emails = { subject: params[:subject], body: params[:body] }
+      flash.now[:alert] = "Something went wrong: #{e.message}"
+    end
+
     @contact = Contact.find_by(id: params[:contact_id])
     @contacts = Contact.is_decision_maker if @contact.nil?
 

@@ -15,6 +15,8 @@ class User < ApplicationRecord
   after_create :assign_default_role
 
   # Associations to other models
+  has_many :emails, dependent: :destroy
+  has_many :leads, foreign_key: :manager_id
   has_many :assigned_leads, class_name: "Lead", foreign_key: "assigned_to"
   has_many :assigned_tasks, class_name: "Task", foreign_key: "assigned_to"
   has_many :created_proposals, class_name: "Proposal", foreign_key: "created_by"

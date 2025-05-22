@@ -1,0 +1,79 @@
+<div class="item pb-4" data-id="<%= lead.id %>">
+  <div class="rounded-lg border <%= lead.end_date && lead.end_date < Date.today ? 'border-error bg-red-50 opacity-70' : 'border-gray-200 bg-white' %> shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div class="p-4">
+      <div class="flex justify-between items-center mb-3">
+        <div class="font-semibold text-gray-800 text-base"><%= lead.project_name || lead.company.name %>
+        <strong>(#<%= lead.id %>)</strong>
+        </div>
+        <div class="flex items-center gap-2">
+          <% if lead.end_date && lead.end_date < Date.today %>
+            <span class="badge badge-error badge-sm">Expired</span>
+          <% end %>
+          <div class="tooltip" data-tip="Actions">
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-sm border-none">
+                <i data-lucide="ellipsis" class="h-4 w-4 text-gray-500"></i>
+              </div>
+              <ul tabindex="0" class="dropdown-content menu bg-gray-100 rounded-box z-1 w-52 p-2 shadow-md border">
+                <li onclick="document.getElementById('modal_<%= lead.id %>').showModal()">
+                  <a>Edit lead <i data-lucide="square-pen" class="size-4"></i></a>
+                </li>
+                <li>
+                  <%= link_to new_admin_email_path(contact_id: lead.contact_id) do %>
+                    Send email <i data-lucide="send-horizontal" class="size-4"></i>
+                  <% end %>
+                </li>
+                <li>
+                  <%= link_to new_admin_proposal_path(lead_id: lead.id) do %>
+                    Create proposal <i data-lucide="file" class="size-4"></i>
+                  <% end %>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <%= render 'admin/sales/edit_modal', lead: lead %>
+        </div>
+      </div>
+      <div class="text-sm text-gray-500 mb-3"><%= lead.company.industry || 'N/A' %></div>
+      <div class="flex flex-wrap gap-2 mb-3">
+        <% if lead.priority.present? %>
+          <div class="tooltip" data-tip="Priority: <%= lead.priority.humanize %>">
+            <span class="badge badge-outline badge-sm <%= lead.priority == 'high' ? 'badge-error' : lead.priority == 'medium' ? 'badge-warning' : 'badge-success' %>">
+              <%= lead.priority.humanize %>
+            </span>
+          </div>
+        <% end %>
+        <div class="tooltip" data-tip="Outcome: <%= lead.outcome.humanize %>">
+          <span class="badge badge-outline badge-sm <%= lead.outcome == 'won' ? 'badge-success' : lead.outcome == 'lost' ? 'badge-error' : 'badge-info' %>">
+            <%= lead.outcome.humanize %>
+          </span>
+        </div>
+        <% lead.tag_list.each do |tag| %>
+          <div class="tooltip" data-tip="Tag: <%= tag %>">
+            <span class="badge badge-outline badge-sm badge-accent"><%= tag %></span>
+          </div>
+        <% end %>
+      </div>
+      <div class="text-xs text-gray-600 space-y-1">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-1">
+            <i data-lucide="user" class="h-3 w-3"></i>
+            <%= lead.contact.name || 'N/A' %>
+          </div>
+          <div class="flex items-center gap-1">
+            <i data-lucide="clock" class="h-3 w-3"></i>
+            <%= time_ago_in_words(lead.created_at) + ' ago' %>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <% if lead.start_date %>
+            <span>Start: <%= lead.start_date.strftime('%d/%m/%Y') %></span>
+          <% end %>
+          <% if lead.end_date %>
+            <div>End: <%= lead.end_date.strftime('%d/%m/%Y') %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
